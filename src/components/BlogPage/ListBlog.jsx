@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import parse from "html-react-parser";
+import BlogCard from "../Card/BlogCard";
 
-export default function About() {
+export default function ListBlog() {
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState([]);
   useEffect(() => {
@@ -26,9 +26,17 @@ export default function About() {
   return (
     <>
       {blogs.map((blog) => (
-        <div key={blog.id}>
-          {blog.content}
-        </div>
+        <BlogCard
+          key={blog.id}
+          image={blog.thumbnailUrl}
+          author={user.find((u) => u.uuid === blog.authorUuid)?.fullName }
+          tag={blog.blogCategory}
+          title={blog.title}
+          summary={blog.content}
+          views={blog.view}
+          time={new Date(blog.createdAt).toLocaleDateString()}
+          userImage={user.find((u) => u.uuid === blog.authorUuid)?.profileUrl }
+        />
       ))}
     </>
   );
