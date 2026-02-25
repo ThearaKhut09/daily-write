@@ -33,7 +33,11 @@ function App() {
       </section>
 
       {/* Blog Section */}
+<<<<<<< HEAD
       <section className="max-w-7xl mx-auto p-6 text-text-main font-sans h-auto">
+=======
+      <section className="max-w-7xl mx-auto p-6 text-text-main font-sans min-h-screen">
+>>>>>>> af4fe8b (fectApi)
         <div className="flex flex-col lg:flex-row gap-12">
           <div className="lg:w-2/3">
             <div className="flex items-center gap-4 mb-6">
