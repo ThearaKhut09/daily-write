@@ -33,7 +33,7 @@ function App() {
       </section>
 
       {/* Blog Section */}
-      <section className="max-w-7xl mx-auto p-6 text-text-main font-sans min-h-screen">
+      <section className="max-w-7xl mx-auto p-6 text-text-main font-sans h-auto">
         <div className="flex flex-col lg:flex-row gap-12">
           <div className="lg:w-2/3">
             <div className="flex items-center gap-4 mb-6">
@@ -58,6 +58,7 @@ function App() {
           </aside>
         </div>
       </section>
+      
       <section className="relative pb-20 lg:pb-32 overflow-hidden">
         <EncourageSection />
       </section>
