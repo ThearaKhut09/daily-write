@@ -16,7 +16,7 @@ export default function BlogList() {
         <span className="absolute right-[16%] top-[70%] h-3 w-3 rounded-full bg-[#a5aaae]" />
 
         <img
-          src="https://www.figma.com/api/mcp/asset/a71766b1-ca85-4600-8bb0-1e13f4912663"
+          src="../src/assets/blogpage/Idea lamp.png"
           alt="Idea lamp"
           className="absolute right-[14%] top-8 hidden w-24 opacity-80 md:block"
         />
@@ -255,9 +255,18 @@ export default function BlogList() {
                   alt={blog.title}
                   className="h-full w-full object-cover"
                 />
-                <span className="absolute left-3 top-3 rounded-full bg-white px-3 py-1 text-[10px] font-semibold text-[#00b33d]">
-                  {blog.author}
-                </span>
+                <div className="absolute left-3 top-3 rounded-full bg-white px-2 py-1 text-[10px] font-semibold text-[#00b33d]">
+                  <div className="flex items-center gap-2">
+                    <img
+                      src={`https://i.pravatar.cc/40?u=${blog.author}`}
+                      alt={blog.author}
+                      className="h-6 w-6 rounded-full object-cover"
+                    />
+                    <span className="text-xs font-semibold text-[#00b33d]">
+                      {blog.author}
+                    </span>
+                  </div>
+                </div>
                 <span className="absolute bottom-3 left-3 rounded-full bg-emerald-50 px-3 py-1 text-[10px] font-semibold text-emerald-700">
                   {blog.tag}
                 </span>
