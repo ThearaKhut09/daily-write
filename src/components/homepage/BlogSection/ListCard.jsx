@@ -41,7 +41,7 @@ export default function ListCard() {
   }, []);
   if (loading) return <SkeletonCard />;
   if (error) return <div>Error: {error}</div>;
-  if (data.length === 0) return <Skeleton />;
+  if (data.length === 0) return <SkeletonCard />;
   return (
     <>
       {data.map((item) => (
@@ -98,9 +98,7 @@ export function SideBar() {
     getUser();
   }, []);
 
-  if (error) return <div>Error: {error}</div>;
-
-if (data.length === 0) {
+if (data.length === 0 || error) {
   return (
     <div className="flex flex-col gap-8 p-4 max-w-2xl mx-auto">
       {[...Array(6)].map((_, i) => (

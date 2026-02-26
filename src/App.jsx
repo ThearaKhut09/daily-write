@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import "./App.css";
 import ListCard, { SideBar } from "./components/homepage/BlogSection/ListCard";
-import Card from "./components/homepage/BlogSection/ListCard";
 import EncourageSection from "./components/homepage/EncourageSection/EncourageSection";
 import ImageSide from "./components/homepage/HeroSection/ImageSide";
 import Information from "./components/homepage/HeroSection/Information";
@@ -33,11 +32,7 @@ function App() {
       </section>
 
       {/* Blog Section */}
-<<<<<<< HEAD
-      <section className="max-w-7xl mx-auto p-6 text-text-main font-sans h-auto">
-=======
       <section className="max-w-7xl mx-auto p-6 text-text-main font-sans min-h-screen">
->>>>>>> af4fe8b (fectApi)
         <div className="flex flex-col lg:flex-row gap-12">
           <div className="lg:w-2/3">
             <div className="flex items-center gap-4 mb-6">
