@@ -56,6 +56,19 @@ body {
   min-height: 100vh;
 }
 
+@media (max-width: 400px) {
+  .faq-button {
+    padding: 0.75rem; 
+  }
+  .faq-button span {
+    font-size: 0.875rem; 
+  }
+  .faq-button div {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+}
+
 @variant dark (&:where(.dark, .dark *));
 
 @keyframes fadeInUp {

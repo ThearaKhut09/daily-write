@@ -3,6 +3,7 @@ import ListCard, { SideBar } from "./components/homepage/BlogSection/ListCard";
 import EncourageSection from "./components/homepage/EncourageSection/EncourageSection";
 import ImageSide from "./components/homepage/HeroSection/ImageSide";
 import Information from "./components/homepage/HeroSection/Information";
+import FAQ from "./components/homepage/FAQ/FAQ";
 
 function App() {
   return (
@@ -63,75 +64,8 @@ function App() {
       </section>
 
     {/* FAQ Section*/}
-      <section className="py-20 lg:py-32">
-        <div className="container mx-auto px-6 lg:px-20">
-          <div className="text-center max-w-2xl mx-auto mb-16 lg:mb-24">
-            <h2 className="text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight">
-              Frequently Asked Questions
-            </h2>
-            <p className="mt-4 text-slate-500 text-lg">
-              Find answers to common questions about DailyWrite, including what
-              types of content you can post, enrollment, and more.
-            </p>
-          </div>
-
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-24 items-center">
-            <div className="flex justify-center">
-              <img
-                src="image_c1646a.png"
-                alt="Thinking Illustration"
-                className="w-full max-w-md h-auto"
-              />
-            </div>
-
-            <div className="space-y-4">
-              <button className="w-full flex items-center justify-between p-6 bg-white border border-slate-100 rounded-2xl shadow-sm hover:border-orange-200 transition-all group">
-                <span className="text-lg font-bold text-slate-800 text-left">
-                  What is DailyWrite?
-                </span>
-                <div className="w-8 h-8 rounded-lg bg-orange-50 flex items-center justify-center text-[#E87121] font-bold group-hover:bg-[#E87121] group-hover:text-white transition-colors">
-                  +
-                </div>
-              </button>
-
-              <button className="w-full flex items-center justify-between p-6 bg-white border border-slate-100 rounded-2xl shadow-sm hover:border-orange-200 transition-all group text-left">
-                <span className="text-lg font-bold text-slate-800">
-                  How can we post the blogs?
-                </span>
-                <div className="w-8 h-8 rounded-lg bg-orange-50 flex items-center justify-center text-[#E87121] font-bold group-hover:bg-[#E87121] group-hover:text-white transition-colors">
-                  +
-                </div>
-              </button>
-
-              <button className="w-full flex items-center justify-between p-6 bg-white border border-slate-100 rounded-2xl shadow-sm hover:border-orange-200 transition-all group text-left">
-                <span className="text-lg font-bold text-slate-800">
-                  Is it free to create an account?
-                </span>
-                <div className="w-8 h-8 rounded-lg bg-orange-50 flex items-center justify-center text-[#E87121] font-bold group-hover:bg-[#E87121] group-hover:text-white transition-colors">
-                  +
-                </div>
-              </button>
-
-              <button className="w-full flex items-center justify-between p-6 bg-white border border-slate-100 rounded-2xl shadow-sm hover:border-orange-200 transition-all group text-left">
-                <span className="text-lg font-bold text-slate-800">
-                  What topics can I write about?
-                </span>
-                <div className="w-8 h-8 rounded-lg bg-orange-50 flex items-center justify-center text-[#E87121] font-bold group-hover:bg-[#E87121] group-hover:text-white transition-colors">
-                  +
-                </div>
-              </button>
-
-              <button className="w-full flex items-center justify-between p-6 bg-white border border-slate-100 rounded-2xl shadow-sm hover:border-orange-200 transition-all group text-left">
-                <span className="text-lg font-bold text-slate-800">
-                  How do I create an account?
-                </span>
-                <div className="w-8 h-8 rounded-lg bg-orange-50 flex items-center justify-center text-[#E87121] font-bold group-hover:bg-[#E87121] group-hover:text-white transition-colors">
-                  +
-                </div>
-              </button>
-            </div>
-          </div>
-        </div>
+      <section className="py-20 lg:py-10">
+        <FAQ/>
       </section>
     </main>
   );
