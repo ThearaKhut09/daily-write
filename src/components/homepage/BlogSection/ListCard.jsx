@@ -1,50 +1,20 @@
-import { useState, useEffect } from "react";
 import { Card, CardSidBar } from "../../Card/HomepageCard";
 import SkeletonCard, { Skeleton } from "../../Card/Skeleton";
+import { useGetAllProductQuery, useGetAllUserQuery, useGetSignleProductQuery } from "../../../app/features/services/productApi";
 
 export default function ListCard() {
-  const [data, setData] = useState([]);
-  const [user, setUser] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const response = await fetch(
-          "https://blog-api.bykh.org/api/v100/blogs?pageSize=1",
-        );
-        const result = await response.json();
-        setData(result.data.content);
-      } catch (err) {
-        setError(err.message);
-      }
-    }
-    fetchData();
-  }, []);
+  const { data, isLoading, isError } = useGetSignleProductQuery();
+  const { data: userData } = useGetAllUserQuery();
 
-  useEffect(() => {
-    async function getUser() {
-      try {
-        const response = await fetch(
-          "https://blog-api.bykh.org/api/v100/users",
-        );
-        const result = await response.json();
-        setUser(result.data.content);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    }
-    getUser();
-  }, []);
-  if (loading) return <SkeletonCard />;
-  if (error) return <div>Error: {error}</div>;
-  if (data.length === 0) return <SkeletonCard />;
+  if (isLoading) return <SkeletonCard />;
+  if (isError) return <div>Error: {isError}</div>;
+
+  const productData = data?.content || data?.data?.content || [];
+  const user = userData?.content || userData?.data?.content || [];
   return (
     <>
-      {data.map((item) => (
+      {productData?.map((item) => (
         <Card
           key={item.uuid}
           title={item.title}
@@ -64,41 +34,16 @@ export default function ListCard() {
 }
 
 export function SideBar() {
-  const [data, setData] = useState([]);
-  const [user, setUser] = useState([]);
-  const [error, setError] = useState(null);
+  const { data, isLoading, isError } = useGetAllProductQuery();
+  const { data: userData } = useGetAllUserQuery();
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const response = await fetch(
-          "https://blog-api.bykh.org/api/v100/blogs?pageSize=6",
-        );
-        const result = await response.json();
-        setData(result.data.content);
-      } catch (err) {
-        setError(err.message);
-      }
-    }
-    fetchData();
-  }, []);
+  if (isLoading) return <SkeletonCard />;
+  if (isError) return <div>Error: {isError}</div>;
 
-  useEffect(() => {
-    async function getUser() {
-      try {
-        const response = await fetch(
-          "https://blog-api.bykh.org/api/v100/users",
-        );
-        const result = await response.json();
-        setUser(result.data.content);
-      } catch (err) {
-        setError(err.message);
-      }
-    }
-    getUser();
-  }, []);
+  const productData = data?.content || data?.data?.content || [];
+  const user = userData?.content || userData?.data?.content || [];
 
-if (data.length === 0 || error) {
+if (productData.length === 0 || isError) {
   return (
     <div className="flex flex-col gap-8 p-4 max-w-2xl mx-auto">
       {[...Array(6)].map((_, i) => (
@@ -135,7 +80,7 @@ if (data.length === 0 || error) {
 }
   return (
     <div className="space-y-8">
-      {data.map((item) => (
+      {productData.map((item) => (
         <CardSidBar
           key={item.uuid}
           title={item.title}
