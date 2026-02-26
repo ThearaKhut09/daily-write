@@ -8,7 +8,7 @@ export default function ListCard() {
   const { data: userData } = useGetAllUserQuery();
 
   if (isLoading) return <SkeletonCard />;
-  if (isError) return <div>Error: {isError}</div>;
+  if (isError) return <SkeletonCard />;
 
   const productData = data?.content || data?.data?.content || [];
   const user = userData?.content || userData?.data?.content || [];
@@ -38,7 +38,7 @@ export function SideBar() {
   const { data: userData } = useGetAllUserQuery();
 
   if (isLoading) return <SkeletonCard />;
-  if (isError) return <div>Error: {isError}</div>;
+  if (isError) return <SkeletonCard/>;
 
   const productData = data?.content || data?.data?.content || [];
   const user = userData?.content || userData?.data?.content || [];
