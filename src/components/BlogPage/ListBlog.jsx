@@ -1,41 +1,42 @@
-import { useEffect, useState } from "react";
+import { useGetAllProductQuery, useGetAllUserQuery } from "../../app/features/services/productApi";
 import BlogCard from "../Card/BlogCard";
+import SkeletonCard from "../Card/Skeleton";
 
-export default function ListBlog() {
-  const [blogs, setBlogs] = useState([]);
-  const [user, setUser] = useState([]);
-  useEffect(() => {
-    async function fetchBlogs() {
-      const response = await fetch(
-        "https://blog-api.bykh.org/api/v100/blogs?pageNumber=0&pageSize=12",
-      );
-      const data = await response.json();
-      setBlogs(data.data.content);
-    }
-    fetchBlogs();
-  }, []);
+export default function ListBlog({ page = 0, pageSize = 12 }) {
+  const { data, isLoading, isError } = useGetAllProductQuery({ pageNumber: page, pageSize });
+  const { data: userData } = useGetAllUserQuery();
 
-  useEffect(() => {
-    async function getUser() {
-      const response = await fetch("https://blog-api.bykh.org/api/v100/users");
-      const result = await response.json();
-      setUser(result.data.content);
-    }
-    getUser();
-  }, []);
+  const productData = data?.data?.content;
+  const totalPages = data?.data?.totalPages || 0;
+  const user = userData?.data?.content;
+
+  if (isLoading || !productData) {
+    return (
+      <div className="flex gap-8 p-4 max-w-2xl mx-auto">
+        {[...Array(6)].map((_, i) => (
+          <SkeletonCard key={i} />
+        ))}
+      </div>
+    );
+  }
+
+  if (isError) {
+    return <div>Error loading blogs</div>;
+  }
+
   return (
     <>
-      {blogs.map((blog) => (
+      {productData.map((blog) => (
         <BlogCard
           key={blog.id}
           image={blog.thumbnailUrl}
-          author={user.find((u) => u.uuid === blog.authorUuid)?.fullName }
+          author={user?.find((u) => u.uuid === blog.authorUuid)?.fullName}
           tag={blog.blogCategory}
           title={blog.title}
           summary={blog.content}
           views={blog.view}
           time={new Date(blog.createdAt).toLocaleDateString()}
-          userImage={user.find((u) => u.uuid === blog.authorUuid)?.profileUrl }
+          userImage={user?.find((u) => u.uuid === blog.authorUuid)?.profileUrl}
         />
       ))}
     </>

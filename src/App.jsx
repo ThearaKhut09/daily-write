@@ -4,6 +4,7 @@ import EncourageSection from "./components/homepage/EncourageSection/EncourageSe
 import ImageSide from "./components/homepage/HeroSection/ImageSide";
 import Information from "./components/homepage/HeroSection/Information";
 import FAQ from "./components/homepage/FAQ/FAQ";
+import ReviewSection from "./components/homepage/ReviewSection/ReviewSection";
 
 function App() {
   return (
@@ -63,9 +64,14 @@ function App() {
         <EncourageSection />
       </section>
 
-    {/* FAQ Section*/}
+      {/* FAQ Section*/}
       <section className="py-20 lg:py-10">
-        <FAQ/>
+        <FAQ />
+      </section>
+
+      {/*Review Section*/}
+      <section className="py-20 lg:py-10 overflow-hidden">
+        <ReviewSection/>
       </section>
     </main>
   );

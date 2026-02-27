@@ -7,7 +7,10 @@ export const productApi = createApi({
   endpoints: (builder) => ({
     // getallproducts
     getAllProduct: builder.query({
-      query: () => `/blogs?pageSize=6`,
+      query: ({ pageNumber = 0, pageSize = 12 }) => `/blogs?pageNumber=${pageNumber}&pageSize=${pageSize}`,
+    }),
+    getLatestBlogs: builder.query({
+      query: () => `/blogs?pageNumber=0&pageSize=6`,
     }),
     getSignleProduct: builder.query({
       query: () => `/blogs?pageSize=1`,
@@ -19,4 +22,4 @@ export const productApi = createApi({
 });
 
 // export hook
-export const { useGetAllProductQuery, useGetAllUserQuery , useGetSignleProductQuery} = productApi;
+export const { useGetAllProductQuery, useGetAllUserQuery , useGetSignleProductQuery, useGetLatestBlogsQuery} = productApi;

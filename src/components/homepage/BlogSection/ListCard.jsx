@@ -3,6 +3,7 @@ import SkeletonCard, { Skeleton } from "../../Card/Skeleton";
 import {
   useGetAllProductQuery,
   useGetAllUserQuery,
+  useGetLatestBlogsQuery,
   useGetSignleProductQuery,
 } from "../../../app/features/services/productApi";
 
@@ -23,11 +24,11 @@ export default function ListCard() {
           description={item.content}
           image={item.thumbnailUrl}
           user={
-            user.find((u) => u.uuid === item.authorUuid)?.fullName ||
+            user?.find((u) => u.uuid === item.authorUuid)?.fullName ||
             item.authorUuid
           }
           userImage={
-            user.find((u) => u.uuid === item.authorUuid)?.profileUrl || null
+            user?.find((u) => u.uuid === item.authorUuid)?.profileUrl || null
           }
           view={item.view}
         />
@@ -37,7 +38,7 @@ export default function ListCard() {
 }
 
 export function SideBar() {
-  const { data, isLoading, isError } = useGetAllProductQuery();
+  const { data, isLoading, isError } = useGetLatestBlogsQuery();
   const { data: userData } = useGetAllUserQuery();
 
   const productData = data?.data?.content;
@@ -67,11 +68,11 @@ export function SideBar() {
             year: "numeric",
           })}
           user={
-            user.find((u) => u.uuid === item.authorUuid)?.fullName ||
+            user?.find((u) => u.uuid === item.authorUuid)?.fullName ||
             item.authorUuid
           }
           userImage={
-            user.find((u) => u.uuid === item.authorUuid)?.profileUrl || null
+            user?.find((u) => u.uuid === item.authorUuid)?.profileUrl || null
           }
         />
       ))}
