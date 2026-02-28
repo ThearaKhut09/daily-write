@@ -4,7 +4,7 @@ import { createApi } from "@reduxjs/toolkit/query/react";
 export const productApi = createApi({
   reducerPath: "productApi",
   tagTypes: ["Comment"],
-  baseQuery: fetchBaseQuery({ baseUrl: "https://blog-api.bykh.org/api/v100" }),
+  baseQuery: fetchBaseQuery({ baseUrl: `${import.meta.env.VITE_BASE_URL}/api/v100` }),
   endpoints: (builder) => ({
     // getallproducts
     getAllProduct: builder.query({
@@ -30,9 +30,11 @@ export const productApi = createApi({
         { type: "Comment", id: blogUuid },
       ],
     }),
+    
     getCurrentUser: builder.query({
       query: () => "/users/me",
     }),
+
     createComment: builder.mutation({
       query: ({ blogUuid, userUuid, content }) => ({
         url: "/comments",

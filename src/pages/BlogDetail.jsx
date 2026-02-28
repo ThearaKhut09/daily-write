@@ -28,14 +28,15 @@ export default function BlogDetail() {
   console.log("blogLoading:", blogLoading);
   console.log("blogError:", blogError);
 
-  const { data: usersResult } = useGetAllUserQuery();
-  const { data: latestResult } = useGetLatestBlogsQuery();
-  console.log("usersResult:", usersResult);
-  console.log("latestResult:", latestResult);
+  const { data: usersResult, error: usersError } = useGetAllUserQuery();
+  const { data: latestResult, error: latestError } = useGetLatestBlogsQuery();
+  console.log("usersResult:", usersResult, "usersError:", usersError);
+  console.log("latestResult:", latestResult, "latestError:", latestError);
 
-  const blog = blogResult.data.content;
-  const users = usersResult?.data?.content || [];
-  const latest = latestResult?.data?.content || [];
+  // Handle both direct blog return and wrapped response
+  const blog = blogResult?.data || blogResult;
+  const users = usersResult?.data?.content || usersResult || [];
+  const latest = latestResult?.data?.content || latestResult || [];
 
   const author = blog
     ? users.find((u) => u.uuid === blog.authorUuid) || null
