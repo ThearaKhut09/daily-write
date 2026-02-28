@@ -1,7 +1,6 @@
 import { Card, CardSidBar } from "../../Card/HomepageCard";
 import SkeletonCard, { Skeleton } from "../../Card/Skeleton";
 import {
-  useGetAllProductQuery,
   useGetAllUserQuery,
   useGetLatestBlogsQuery,
   useGetSignleProductQuery,

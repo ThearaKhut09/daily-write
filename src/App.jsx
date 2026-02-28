@@ -5,6 +5,7 @@ import ImageSide from "./components/homepage/HeroSection/ImageSide";
 import Information from "./components/homepage/HeroSection/Information";
 import FAQ from "./components/homepage/FAQ/FAQ";
 import ReviewSection from "./components/homepage/ReviewSection/ReviewSection";
+import ShareFeedback from "./components/homepage/ShareFeedBack/ShareFeedback";
 
 function App() {
   return (
@@ -71,8 +72,10 @@ function App() {
 
       {/*Review Section*/}
       <section className="py-20 lg:py-10 overflow-hidden">
-        <ReviewSection/>
+        <ReviewSection />
       </section>
+        <ShareFeedback/>
+      <section className="py-20 px-6 lg:px-20"></section>
     </main>
   );
 }
