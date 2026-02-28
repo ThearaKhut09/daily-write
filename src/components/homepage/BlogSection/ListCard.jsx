@@ -18,6 +18,7 @@ export default function ListCard() {
     <>
       {productData?.map((item) => (
         <Card
+          uuid={item.uuid}
           key={item.uuid}
           title={item.title}
           description={item.content}
@@ -47,7 +48,7 @@ export function SideBar() {
     return (
       <div className="flex flex-col gap-8 p-4 max-w-2xl mx-auto">
         {[...Array(6)].map((_, i) => (
-          <Skeleton key={i}/>
+          <Skeleton key={i} />
         ))}
       </div>
     );
@@ -56,6 +57,7 @@ export function SideBar() {
     <div className="space-y-8">
       {productData.map((item) => (
         <CardSidBar
+          uuid={item.uuid}
           key={item.uuid}
           title={item.title}
           image={item.thumbnailUrl}

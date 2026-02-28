@@ -40,7 +40,7 @@ const router = createBrowserRouter([
         element: <Profile />,
       },
       {
-        path: "/blog-detail",
+        path: "/blogs/:uuid",
         element: <BlogDetail />,
       },
     ],
