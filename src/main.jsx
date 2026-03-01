@@ -5,8 +5,6 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import About from "./pages/About.jsx";
 import BlogList from "./pages/BlogList.jsx";
 import BlogPost from "./pages/BlogPost.jsx";
-import Auth from "./pages/Auth.jsx";
-import Auth1 from"./pages/Auth1.jsx";
 import Profile from "./pages/Profile.jsx";
 import BlogDetail from "./pages/BlogDetail.jsx";
 import SaveBlog from "./pages/SaveBlog.jsx";
@@ -48,10 +46,6 @@ const router = createBrowserRouter([
   },
   {
     path: "/auth",
-    element: <LoginPage />,
-  },
-  {
-    path: "/auth1",
     element: <LoginPage />,
   },
   {
