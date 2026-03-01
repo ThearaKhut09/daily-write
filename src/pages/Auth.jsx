@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { useUserLoginMutation } from "../app/features/auth/auth";
-import { storeAccessToken, getDecryptedAccessToken } from "../util/tokenUtil";
+import { storeAccessToken, storeRefreshToken, getDecryptedAccessToken } from "../util/tokenUtil";
 import { Link, useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
@@ -14,6 +14,10 @@ const LoginPage = () => {
   useEffect(() => {
     if (userResponse?.data?.accessToken) {
       storeAccessToken(userResponse.data.accessToken);
+      // Store refreshToken if it exists in the response
+      if (userResponse.data.refreshToken) {
+        storeRefreshToken(userResponse.data.refreshToken);
+      }
       const realAccessToken = getDecryptedAccessToken();
       console.log("Real Access Token: ", realAccessToken);
       navigate("/");

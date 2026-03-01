@@ -1,17 +1,29 @@
+import { getDecryptedRefreshToken } from "../../../util/tokenUtil";
 import { baseApi } from "../../baseApi";
 
 export const auth = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     userLogin: builder.mutation({
       query: (credentials) => ({
-        url: "/login",
+        url: "/auth/login",
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: credentials,
       }),
     }),
+
     getCurrentUser: builder.query({
-      query: () => "/me",
+      query: () => {
+        const refreshToken = getDecryptedRefreshToken();
+        return {
+          url: "/auth/me",
+          method: "POST",
+          body: {}, // Some APIs require a body for POST requests
+          headers: {
+            Authorization: `Bearer ${refreshToken}`,
+          },
+        };
+      },
     }),
   }),
 });

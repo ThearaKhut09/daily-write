@@ -1,14 +1,24 @@
 import { useEffect, useState } from "react";
-import { Moon, Sun, SquarePen, Menu, X } from "lucide-react";
+import { Moon, Sun, SquarePen, Menu, X, LogOut, User } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../../assets/DaliyWriteLogo.svg";
+import { useGetCurrentUserQuery } from "../../app/features/auth/auth";
+import { clearTokens, getDecryptedRefreshToken } from "../../util/tokenUtil";
 
 export default function NavbarComponent() {
   const [isDark, setIsDark] = useState(() =>
     document.documentElement.classList.contains("dark"),
   );
   const [menuOpen, setMenuOpen] = useState(false);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
   const navigate = useNavigate();
+
+  const token = getDecryptedRefreshToken();
+  const { data: userData, isLoading } = useGetCurrentUserQuery(undefined, {
+    skip: !token,
+  });
+
+  const user = userData?.data;
 
   useEffect(() => {
     if (isDark) {
@@ -19,6 +29,11 @@ export default function NavbarComponent() {
       localStorage.setItem("theme", "light");
     }
   }, [isDark]);
+
+  const handleLogout = () => {
+    clearTokens();
+    window.location.reload(); // Refresh to clear state
+  };
 
   const navItems = [
     { path: "/", name: "HOME" },
@@ -63,12 +78,54 @@ export default function NavbarComponent() {
             {isDark ? <Sun size={18} /> : <Moon size={18} />}
           </button>
 
-          <button
-            onClick={() => navigate("/auth")}
-            className="hidden md:block bg-primary-orange px-6 py-2 rounded-lg text-white text-sm font-bold uppercase hover:brightness-110 transition-all"
-          >
-            Login
-          </button>
+          {isLoading && token ? (
+            <div className="w-10 h-10 rounded-full border-2 border-orange-100 animate-pulse bg-orange-50" />
+          ) : user ? (
+            <div className="relative">
+              <button
+                onClick={() => setShowProfileMenu(!showProfileMenu)}
+                className="flex items-center gap-2 focus:outline-none"
+              >
+                <div className="w-10 h-10 rounded-full border-2 border-primary-orange overflow-hidden bg-orange-50 flex items-center justify-center">
+                  {user.profileUrl ? (
+                    <img src={user.profileUrl} alt={user.fullName} className="w-full h-full object-cover" />
+                  ) : (
+                    <User className="text-primary-orange" size={20} />
+                  )}
+                </div>
+                <span className="hidden lg:block text-sm font-bold text-text-main max-w-25 truncate">
+                  {user.fullName}
+                </span>
+              </button>
+
+              {showProfileMenu && (
+                <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-slate-900 rounded-xl shadow-xl border border-gray-100 dark:border-gray-800 py-2 z-50">
+                  <Link
+                    to="/profile"
+                    onClick={() => setShowProfileMenu(false)}
+                    className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-orange-50 dark:hover:bg-slate-800 transition-colors"
+                  >
+                    <User size={16} />
+                    Profile
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                  >
+                    <LogOut size={16} />
+                    Logout
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <button
+              onClick={() => navigate("/auth")}
+              className="hidden md:block bg-primary-orange px-6 py-2 rounded-lg text-white text-sm font-bold uppercase hover:brightness-110 transition-all"
+            >
+              Login
+            </button>
+          )}
 
           <button
             className="md:hidden p-2 text-primary-orange"
@@ -92,15 +149,34 @@ export default function NavbarComponent() {
             </Link>
           ))}
           <hr className="border-border-main" />
-          <button
-            onClick={() => {
-              navigate("/auth");
-              setMenuOpen(false);
-            }}
-            className="w-full bg-primary-orange py-3 rounded-lg text-white font-bold uppercase"
-          >
-            Login
-          </button>
+          {token && user ? (
+            <div className="space-y-4">
+              <Link
+                to="/profile"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-3 text-lg font-bold text-primary-orange"
+              >
+                <User size={20} />
+                {user.fullName}
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="w-full bg-red-600 py-3 rounded-lg text-white font-bold uppercase"
+              >
+                Logout
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => {
+                navigate("/auth");
+                setMenuOpen(false);
+              }}
+              className="w-full bg-primary-orange py-3 rounded-lg text-white font-bold uppercase"
+            >
+              Login
+            </button>
+          )}
         </div>
       )}
     </header>

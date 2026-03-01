@@ -3,11 +3,12 @@ import { Link } from "react-router-dom";
 import {
   useCreateCommentMutation,
   useGetCommentsByBlogQuery,
-  useGetCurrentUserQuery,
 } from "../../app/features/services/productApi";
+import { useGetCurrentUserQuery } from "../../app/features/auth/auth";
+import { getDecryptedAccessToken } from "../../util/tokenUtil";
 
 export default function CommentSection({ blogUuid }) {
-  const hasToken = Boolean(localStorage.getItem("accessToken"));
+  const hasToken = Boolean(getDecryptedAccessToken());
   const [content, setContent] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 

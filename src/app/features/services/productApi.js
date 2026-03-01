@@ -27,10 +27,6 @@ export const productApi = baseApi.injectEndpoints({
       ],
     }),
     
-    getCurrentUser: builder.query({
-      query: () => "/users/me",
-    }),
-
     createComment: builder.mutation({
       query: ({ blogUuid, userUuid, content }) => ({
         url: "/comments",
@@ -52,6 +48,5 @@ export const {
   useGetLatestBlogsQuery,
   useGetBlogByUuidQuery,
   useGetCommentsByBlogQuery,
-  useGetCurrentUserQuery,
   useCreateCommentMutation,
 } = productApi;
