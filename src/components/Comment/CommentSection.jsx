@@ -65,7 +65,7 @@ export default function CommentSection({ blogUuid }) {
 
   return (
     <section className="mt-10">
-      <h3 className="text-2xl font-semibold text-[#9f430a]">Comments</h3>
+      <h3 className="text-2xl font-semibold text-[var(--primary-700)]">Comments</h3>
 
       <form onSubmit={handleSubmit} className="mt-4 space-y-3">
         <textarea
@@ -75,7 +75,7 @@ export default function CommentSection({ blogUuid }) {
             hasToken ? "Write your comment..." : "Login to write a comment"
           }
           disabled={!hasToken || creatingComment}
-          className="w-full rounded-xl border border-border-main bg-bg-main p-3 text-sm text-text-main outline-none focus:border-primary-orange"
+          className="input-field w-full rounded-xl border border-[var(--border-color)] bg-[var(--bg-primary)] p-3 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--primary-500)]"
           rows={4}
         />
 
@@ -84,9 +84,9 @@ export default function CommentSection({ blogUuid }) {
         )}
 
         {!hasToken && (
-          <p className="text-sm text-text-main">
+          <p className="text-sm text-[var(--text-primary)]">
             Please{" "}
-            <Link to="/auth" className="text-primary-orange font-semibold">
+            <Link to="/auth" className="text-[var(--primary-500)] font-semibold">
               login
             </Link>{" "}
             to post a comment.
@@ -96,7 +96,7 @@ export default function CommentSection({ blogUuid }) {
         <button
           type="submit"
           disabled={!hasToken || creatingComment}
-          className="rounded-lg bg-primary-orange px-4 py-2 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
+          className="rounded-lg bg-[var(--primary-500)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--primary-600)] disabled:cursor-not-allowed disabled:opacity-60 transition-colors"
         >
           {creatingComment ? "Posting..." : "Post comment"}
         </button>
@@ -104,7 +104,7 @@ export default function CommentSection({ blogUuid }) {
 
       <div className="mt-6 space-y-4">
         {commentsLoading && (
-          <p className="text-sm text-text-main">Loading comments...</p>
+          <p className="text-sm text-[var(--text-primary)]">Loading comments...</p>
         )}
 
         {commentsError && (
@@ -112,7 +112,7 @@ export default function CommentSection({ blogUuid }) {
         )}
 
         {!commentsLoading && !commentsError && comments.length === 0 && (
-          <p className="text-sm text-text-main">No comments yet.</p>
+          <p className="text-sm text-[var(--text-primary)]">No comments yet.</p>
         )}
 
         {comments.map((item) => {
@@ -127,32 +127,32 @@ export default function CommentSection({ blogUuid }) {
           return (
             <article
               key={item.uuid}
-              className="rounded-xl border border-border-main bg-white p-4"
+              className="rounded-xl border border-[var(--border-color)] bg-[var(--bg-primary)] p-4 hover:bg-[var(--bg-secondary)] transition-colors"
             >
               <div className="flex items-center gap-2">
                 {item?.user?.profileUrl ? (
                   <img
                     src={item.user.profileUrl}
                     alt={item?.user?.fullName || "User"}
-                    className="h-8 w-8 rounded-full object-cover"
+                    className="h-8 w-8 rounded-full object-cover border border-[var(--border-color)]"
                   />
                 ) : (
-                  <div className="h-8 w-8 rounded-full bg-primary-orange text-white flex items-center justify-center text-xs font-semibold uppercase">
+                  <div className="h-8 w-8 rounded-full bg-[var(--primary-500)] text-white flex items-center justify-center text-xs font-semibold uppercase">
                     {(item?.user?.fullName || "U").charAt(0)}
                   </div>
                 )}
 
                 <div>
-                  <p className="text-sm font-semibold text-text-main">
+                  <p className="text-sm font-semibold text-[var(--text-primary)]">
                     {item?.user?.fullName || "Unknown User"}
                   </p>
                   {commentedDate && (
-                    <p className="text-xs text-[#797f84]">{commentedDate}</p>
+                    <p className="text-xs text-[var(--text-secondary)]">{commentedDate}</p>
                   )}
                 </div>
               </div>
 
-              <p className="mt-3 text-sm text-text-main">{item.content}</p>
+              <p className="mt-3 text-sm text-[var(--text-primary)]">{item.content}</p>
             </article>
           );
         })}

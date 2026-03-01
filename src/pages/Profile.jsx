@@ -28,7 +28,7 @@ const BlogCard = ({
   authorName,
   authorImage,
 }) => (
-  <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col">
+  <div className="bg-(--bg-primary) rounded-2xl shadow-sm border border-(--border-color) overflow-hidden flex flex-col">
     {/* Card Header */}
     <div className="p-3 flex items-center gap-2">
       <img
@@ -36,13 +36,13 @@ const BlogCard = ({
           authorImage || "https://api.dicebear.com/7.x/avataaars/svg?seed=User"
         }
         alt="avatar"
-        className="w-6 h-6 rounded-full border border-gray-200 object-cover"
+        className="w-6 h-6 rounded-full border border-(--border-color) object-cover"
       />
-      <span className="text-xs font-medium text-gray-700">{authorName}</span>
+      <span className="text-xs font-medium text-(--text-primary)">{authorName}</span>
     </div>
 
     {/* Image Container */}
-    <div className="relative h-40 w-full bg-gray-200">
+    <div className="relative h-40 w-full bg-(--bg-secondary)">
       <img src={image} alt={title} className="w-full h-full object-cover" />
       <span
         className={`absolute bottom-2 left-2 text-[10px] px-2 py-0.5 rounded text-white font-medium ${tagColor}`}
@@ -53,32 +53,32 @@ const BlogCard = ({
 
     {/* Content */}
     <div className="p-4 flex-1">
-      <h3 className="font-bold text-sm leading-tight mb-2 text-gray-800">
+      <h3 className="font-bold text-sm leading-tight mb-2 text-(--text-primary)">
         {title}
       </h3>
-      <p className="text-xs text-gray-500 line-clamp-2 mb-4">{description}</p>
+      <p className="text-xs text-(--text-secondary) line-clamp-2 mb-4">{description}</p>
 
       <div className="mt-auto">
-        <span className="text-[10px] text-gray-400 block mb-3">{time}</span>
+        <span className="text-[10px] text-(--text-secondary) block mb-3">{time}</span>
         <div className="flex items-center justify-between">
-          <div className="flex gap-3 text-gray-400">
+          <div className="flex gap-3 text-(--text-secondary)">
             <div className="flex items-center gap-1">
-              <Heart size={14} className="text-orange-500 fill-orange-500" />
-              <span className="text-[10px] font-bold text-gray-600">
+              <Heart size={14} className="text-(--primary-500) fill-(--primary-500)" />
+              <span className="text-[10px] font-bold text-(--text-primary)">
                 {likes}
               </span>
             </div>
             <div className="flex items-center gap-1">
               <BookmarkIcon
                 size={14}
-                className="text-orange-500 fill-orange-500"
+                className="text-(--primary-500) fill-(--primary-500)"
               />
-              <span className="text-[10px] font-bold text-gray-600">
+              <span className="text-[10px] font-bold text-(--text-primary)">
                 {saves}
               </span>
             </div>
           </div>
-          <button className="bg-orange-500 hover:bg-orange-600 text-white text-[10px] font-bold py-1.5 px-4 rounded-lg transition-colors">
+          <button className="bg-(--primary-500) hover:bg-primary-600 text-white text-[10px] font-bold py-1.5 px-4 rounded-lg transition-colors">
             Read More
           </button>
         </div>
@@ -124,8 +124,8 @@ const Profile = () => {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#FDFCFB]">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>
+      <div className="flex min-h-screen items-center justify-center bg-(--bg-primary)">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--primary-500)]"></div>
       </div>
     );
   }
@@ -165,32 +165,32 @@ const Profile = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#FDFCFB]">
+    <div className="flex min-h-screen bg-(--bg-primary)">
       {/* Sidebar */}
-      <aside className="w-64 border-r border-gray-100 flex flex-col p-6 fixed h-full bg-white">
+      <aside className="w-64 border-r border-(--border-color) flex flex-col p-6 fixed h-full bg-(--bg-primary)">
         <div
           className="flex items-center gap-2 mb-12 cursor-pointer"
           onClick={() => navigate("/")}
         >
-          <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
-            <span className="text-orange-600 text-xl">🖋️</span>
+          <div className="w-8 h-8 bg-(--primary-500) bg-opacity-10 rounded-lg flex items-center justify-center">
+            <span className="text-(--primary-500) text-xl">🖋️</span>
           </div>
-          <h1 className="font-bold text-xl text-gray-800">DailyWrite</h1>
+          <h1 className="font-bold text-xl text-(--text-primary)">DailyWrite</h1>
         </div>
 
         <nav className="space-y-2">
-          <button className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-orange-500 text-white font-medium shadow-md shadow-orange-200">
+          <button className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-(--primary-500) text-white font-medium shadow-md" style={{ boxShadow: '0 4px 6px -1px rgba(244, 128, 36, 0.2)' }}>
             <User size={18} /> Profile
           </button>
           <button
             onClick={() => navigate("/about")}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-orange-400 hover:bg-orange-50 font-medium transition-all"
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-(--primary-500) hover:bg-(--primary-500) hover:bg-opacity-10 font-medium transition-all"
           >
             <Info size={18} /> About
           </button>
           <button
             onClick={() => navigate("/save-blog")}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-orange-400 hover:bg-orange-50 font-medium transition-all"
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-(--primary-500) hover:bg-(--primary-500) hover:bg-opacity-10 font-medium transition-all"
           >
             <Bookmark size={18} /> Saved
           </button>
@@ -203,7 +203,7 @@ const Profile = () => {
         <header className="flex justify-between items-start mb-12">
           <div className="flex flex-col items-center mx-auto">
             <div className="relative">
-              <div className="w-24 h-24 rounded-full border-4 border-yellow-400 overflow-hidden bg-gray-100 flex items-center justify-center">
+              <div className="w-24 h-24 rounded-full border-4 border-[var(--primary-500)] overflow-hidden bg-(--bg-secondary) flex items-center justify-center">
                 {user?.profileUrl ? (
                   <img
                     src={user.profileUrl}
@@ -211,10 +211,10 @@ const Profile = () => {
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <User size={40} className="text-gray-400" />
+                  <User size={40} className="text-(--text-secondary)" />
                 )}
               </div>
-              <div className="absolute -top-2 -right-2 bg-white rounded-full p-1 shadow-sm">
+              <div className="absolute -top-2 -right-2 bg-(--bg-primary) rounded-full p-1 shadow-sm border border-(--border-color)">
                 <img
                   src="https://api.dicebear.com/7.x/avataaars/svg?seed=1"
                   className="w-5 h-5"
@@ -222,10 +222,10 @@ const Profile = () => {
                 />
               </div>
             </div>
-            <h2 className="mt-4 text-2xl font-bold text-gray-800">
+            <h2 className="mt-4 text-2xl font-bold text-(--text-primary)">
               {user?.fullName || "User"}
             </h2>
-            <p className="text-gray-400 text-sm">
+            <p className="text-(--text-secondary) text-sm">
               {user?.email || "email@example.com"}
             </p>
           </div>
@@ -240,12 +240,12 @@ const Profile = () => {
         {/* Blogs Feed */}
         <div className="max-w-6xl mx-auto">
           <div className="flex justify-center items-center mb-8 relative">
-            <h2 className="text-4xl font-black text-orange-500 tracking-tight">
+            <h2 className="text-4xl font-black text-(--primary-500) tracking-tight">
               Blogs
             </h2>
             <div className="absolute right-0 flex items-center gap-2 text-sm">
-              <span className="text-gray-500">Sort by:</span>
-              <button className="flex items-center gap-1 border border-gray-200 rounded-lg px-3 py-1 bg-white text-gray-700">
+              <span className="text-(--text-secondary)">Sort by:</span>
+              <button className="flex items-center gap-1 border border-(--border-color) rounded-lg px-3 py-1 bg-(--bg-primary) text-(--text-primary)">
                 Latest <ChevronDown size={14} />
               </button>
             </div>
@@ -260,13 +260,13 @@ const Profile = () => {
             <button
               onClick={() => setPage((p) => Math.max(0, p - 1))}
               disabled={page === 0}
-              className="rounded-md border border-border-main px-2 py-1 text-[#a5aaae] hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="rounded-md border border-(--border-color) px-2 py-1 text-(--text-secondary) hover:bg-(--bg-secondary) disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <ChevronLeft size={16} />
             </button>
             {getPageNumbers().map((pageNum, idx) =>
               pageNum === "..." ? (
-                <span key={idx} className="px-2 text-[#a5aaae]">
+                <span key={idx} className="px-2 text-(--text-secondary)">
                   ...
                 </span>
               ) : (
@@ -275,8 +275,8 @@ const Profile = () => {
                   onClick={() => setPage(pageNum)}
                   className={`rounded-md px-3 py-1 ${
                     page === pageNum
-                      ? "bg-primary-orange text-white"
-                      : "border border-border-main text-[#5e6569] hover:bg-gray-100"
+                      ? "bg-(--primary-500) text-white"
+                      : "border border-(--border-color) text-(--text-secondary) hover:bg-(--bg-secondary)"
                   }`}
                 >
                   {pageNum + 1}
@@ -286,7 +286,7 @@ const Profile = () => {
             <button
               onClick={() => setPage((p) => p + 1)}
               disabled={page >= totalPages - 1}
-              className="rounded-md border border-border-main px-2 py-1 text-[#a5aaae] hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="rounded-md border border-(--border-color) px-2 py-1 text-(--text-secondary) hover:bg-(--bg-secondary) disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <ChevronRight size={16} />
             </button>

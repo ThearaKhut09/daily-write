@@ -50,7 +50,7 @@ export default function BlogDetail() {
 
   if (loading) {
     return (
-      <section className="bg-bg-main px-4 py-6 text-text-main sm:px-6 lg:px-10">
+      <section className="bg-[var(--bg-primary)] px-4 py-6 text-[var(--text-primary)] sm:px-6 lg:px-10">
         <div className="mx-auto max-w-6xl text-center text-lg">
           Loading blog...
         </div>
@@ -60,13 +60,13 @@ export default function BlogDetail() {
 
   if (error || !blog) {
     return (
-      <section className="bg-bg-main px-4 py-6 text-text-main sm:px-6 lg:px-10">
+      <section className="bg-[var(--bg-primary)] px-4 py-6 text-[var(--text-primary)] sm:px-6 lg:px-10">
         <div className="mx-auto max-w-6xl text-center">
           <p className="text-lg text-red-500">{error || "Blog not found."}</p>
           <button
             type="button"
             onClick={() => navigate("/blogs")}
-            className="mt-4 rounded-lg bg-primary-orange px-4 py-2 text-white"
+            className="mt-4 rounded-lg bg-[var(--primary-500)] px-4 py-2 text-white hover:bg-[var(--primary-600)] transition-colors"
           >
             Back to Blogs
           </button>
@@ -82,7 +82,7 @@ export default function BlogDetail() {
   });
 
   return (
-    <section className="bg-bg-main px-4 py-3 text-text-main sm:px-6 lg:px-10">
+    <section className="bg-[var(--bg-primary)] px-4 py-3 text-[var(--text-primary)] sm:px-6 lg:px-10">
       <div className="mx-auto max-w-6xl">
         <div className="relative overflow-hidden rounded-sm">
           <img
@@ -90,64 +90,64 @@ export default function BlogDetail() {
             alt={blog.title}
             className="h-55 w-full object-cover sm:h-80 md:h-105"
           />
-          <span className="absolute bottom-4 left-4 rounded-full bg-primary-orange px-3 py-1.5 text-sm text-white sm:text-base">
+          <span className="absolute bottom-4 left-4 rounded-full bg-[var(--primary-500)] px-3 py-1.5 text-sm text-white sm:text-base">
             {blog.blogCategory}
           </span>
         </div>
 
         <div className="mx-auto mt-6 max-w-5xl">
-          <h1 className="text-3xl font-bold text-primary-orange sm:text-4xl">
+          <h1 className="text-3xl font-bold text-[var(--primary-500)] sm:text-4xl">
             {blog.title}
           </h1>
 
-          <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-[#30393e]">
+          <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-[var(--text-secondary)]">
             <div className="flex items-center gap-2">
               <img
                 src={author?.profileUrl}
                 alt={author?.fullName || "Author"}
-                className="h-8 w-8 rounded-full object-cover"
+                className="h-8 w-8 rounded-full object-cover border border-[var(--border-color)]"
               />
               <div>
-                <p className="font-medium leading-none">
+                <p className="font-medium leading-none text-[var(--text-primary)]">
                   {author?.fullName || "Unknown Author"}
                 </p>
-                <p className="mt-1 text-xs text-[#797f84]">{createdDate}</p>
+                <p className="mt-1 text-xs text-[var(--text-secondary)]">{createdDate}</p>
               </div>
             </div>
-            <span className="flex items-center gap-1 text-xs sm:text-sm">
+            <span className="flex items-center gap-1 text-xs sm:text-sm text-[var(--text-secondary)]">
               <Clock3 size={14} /> 10 min read
             </span>
-            <span className="flex items-center gap-1 text-xs sm:text-sm">
+            <span className="flex items-center gap-1 text-xs sm:text-sm text-[var(--text-secondary)]">
               <Eye size={14} /> {blog.view} views
             </span>
           </div>
 
-          <article className="prose prose-sm mt-8 max-w-none text-text-main sm:prose-base">
+          <article className="prose prose-sm mt-8 max-w-none text-[var(--text-primary)] sm:prose-base">
             {parse(blog.content || "")}
           </article>
 
-          <div className="mt-8 border-t border-border-main pt-6">
+          <div className="mt-8 border-t border-[var(--border-color)] pt-6">
             <div className="flex flex-wrap items-center gap-3">
-              <button className="flex items-center gap-2 rounded-xl border border-[#a5aaae] px-4 py-2 text-sm hover:bg-gray-50">
-                <Heart size={16} /> 20
+              <button className="flex items-center gap-2 rounded-xl border border-[var(--border-color)] px-4 py-2 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] transition-colors">
+                <Heart size={16} className="text-[var(--text-secondary)]" /> 20
               </button>
-              <button className="flex items-center gap-2 rounded-xl border border-[#a5aaae] px-4 py-2 text-sm hover:bg-gray-50">
-                <Bookmark size={16} /> 20
+              <button className="flex items-center gap-2 rounded-xl border border-[var(--border-color)] px-4 py-2 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] transition-colors">
+                <Bookmark size={16} className="text-[var(--text-secondary)]" /> 20
               </button>
               <button
                 type="button"
                 onClick={() =>
                   navigator.clipboard.writeText(window.location.href)
                 }
-                className="flex items-center gap-2 rounded-xl border border-[#a5aaae] px-4 py-2 text-sm hover:bg-gray-50"
+                className="flex items-center gap-2 rounded-xl border border-[var(--border-color)] px-4 py-2 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] transition-colors"
               >
-                <Link2 size={16} /> Copy link
+                <Link2 size={16} className="text-[var(--text-secondary)]" /> Copy link
               </button>
             </div>
           </div>
 
           <div className="mt-10">
-            <h3 className="text-2xl font-semibold text-[#9f430a]">
+            <h3 className="text-2xl font-semibold text-[var(--primary-700)]">
               Latest in This Topic
             </h3>
 
@@ -156,7 +156,7 @@ export default function BlogDetail() {
                 <article
                   key={item.uuid}
                   onClick={() => navigate(`/blogs/${item.uuid}`)}
-                  className="flex min-h-32 cursor-pointer overflow-hidden rounded-2xl border border-[#797f84] bg-bg-main"
+                  className="flex min-h-32 cursor-pointer overflow-hidden rounded-2xl border border-[var(--border-color)] bg-[var(--bg-primary)] hover:bg-[var(--bg-secondary)] transition-colors"
                 >
                   <img
                     src={item.thumbnailUrl}
@@ -164,10 +164,10 @@ export default function BlogDetail() {
                     className="h-full w-32 shrink-0 object-cover sm:w-40"
                   />
                   <div className="flex flex-1 flex-col justify-center p-3">
-                    <h4 className="text-sm font-semibold text-black sm:text-base">
+                    <h4 className="text-sm font-semibold text-[var(--text-primary)] sm:text-base">
                       {item.title}
                     </h4>
-                    <p className="mt-1 line-clamp-3 text-xs text-black/80 sm:text-sm">
+                    <p className="mt-1 line-clamp-3 text-xs text-[var(--text-secondary)] sm:text-sm">
                       {(item.content || "")
                         .replace(/<[^>]+>/g, " ")
                         .replace(/\s+/g, " ")
@@ -181,7 +181,7 @@ export default function BlogDetail() {
 
           <CommentSection blogUuid={blog.uuid} />
 
-          <div className="mt-5 border-t border-border-main" />
+          <div className="mt-5 border-t border-[var(--border-color)]" />
         </div>
       </div>
     </section>
