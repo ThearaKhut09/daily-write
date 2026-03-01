@@ -1,187 +1,190 @@
-import React, { useState } from "react";
-import logo from "../assets/DailyWrite.svg";
-import picture from "../assets/Signup-cuate.png";
-import google from "../assets/unnamed.png";
-import { Icon } from "@iconify/react";
-import { useNavigate } from "react-router-dom";
-import {
-  useUserLoginMutation
-} from "../app/features/auth/auth";
+import React, { useEffect, useState } from "react";
+import { ArrowLeft, Loader2 } from "lucide-react";
+import { useUserLoginMutation } from "../app/features/auth/auth";
+import { storeAccessToken, getDecryptedAccessToken } from "../util/tokenUtil";
+import { Link, useNavigate } from "react-router-dom";
 
-export default function LoginFormLayout() {
-  const navigate = useNavigate();
+const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [login, { isLoading }] = useUserLoginMutation();
+  const navigate = useNavigate();
+  const [loginUser, { data: userResponse, isLoading, isError, error: loginError }] = useUserLoginMutation();
 
-  async function handleLogin(e) {
+  useEffect(() => {
+    if (userResponse?.data?.accessToken) {
+      storeAccessToken(userResponse.data.accessToken);
+      const realAccessToken = getDecryptedAccessToken();
+      console.log("Real Access Token: ", realAccessToken);
+      navigate("/");
+    }
+  }, [userResponse, navigate]);
+
+  useEffect(() => {
+    if (isError) {
+      setError(loginError?.data?.message || "Login failed. Please check your credentials.");
+    }
+  }, [isError, loginError]);
+
+  const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
-
-    if (!email || !password) {
-      setError("Please enter both email and password");
-      return;
-    }
-
     try {
-      const result = await login({
+      await loginUser({
         email,
         password,
       }).unwrap();
-
-      // Store token
-      if (result.token) {
-        localStorage.setItem("token", result.token);
-      }
-
-      // Redirect to home
-      navigate("/");
     } catch (err) {
-      console.error("Login error:", err);
-      setError(err.data?.message || "Login failed. Please check your credentials.");
+      // Error is handled by the useEffect above
+      console.error("Failed to login: ", err);
     }
-  }
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#FBF7F3] to-[#F6EFE8]">
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-        html, body { font-family: Poppins, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
-      `}</style>
+    <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-6 relative overflow-hidden">
+      {/* Decorative Background Blobs */}
+      <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-orange-100 rounded-full blur-3xl opacity-50" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-orange-100 rounded-full blur-3xl opacity-50" />
 
-      <div>
-        <div className="px-6 pt-6">
-          <a
-            href="#"
-            className="inline-flex items-center gap-2 text-sm text-[#D96B2B] hover:underline"
-          >
-            <Icon icon="mdi:arrow-left" className="text-lg" />
-            Back to home
-          </a>
-        </div>
+      {/* Back to Home Link */}
+      <div className="absolute top-8 left-8">
+        <Link
+          to="/"
+          className="flex items-center text-orange-700 font-medium hover:underline"
+        >
+          <ArrowLeft size={18} className="mr-2" />
+          Back to home
+        </Link>
+      </div>
 
-        <div className="grid items-center gap-10 lg:grid-cols-2 mx-auto max-w-6xl px-4 py-10">
-          <div className="w-full">
-            <div className="rounded-2xl border border-black/5 bg-white/70 p-8 shadow-[0_18px_60px_-40px_rgba(0,0,0,0.25)] backdrop-blur">
-              <div className="mb-6 flex flex-col items-center text-center">
-                <div className="mb-3 grid h-14 w-14 place-items-center rounded-2xl bg-[#FFF3EA]">
+      <div className="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center z-10">
+        {/* Left Side: Login Card */}
+        <div className="flex justify-center lg:justify-end">
+          <div className="bg-white p-10 rounded-[2.5rem] shadow-sm border border-gray-100 w-full max-w-md">
+            <div className="flex flex-col items-center mb-8">
+              {/* Logo Placeholder */}
+              <div className="mb-4">
+                <div className="w-16 h-16 bg-orange-50 rounded-full flex items-center justify-center">
                   <img
-                    src={logo}
+                    src="https://cdn-icons-png.flaticon.com/512/2645/2645897.png"
                     alt="Logo"
-                    className="h-10 w-10 object-contain"
-                    draggable="false"
+                    className="w-10 h-10"
                   />
                 </div>
+              </div>
+              <h1 className="text-3xl font-bold text-orange-600">Login</h1>
+              <p className="text-gray-500 mt-2 text-center text-sm">
+                If you already a member, easily log in now.
+              </p>
+            </div>
 
-                <h1 className="text-xl font-semibold text-[#D8732E]">Login</h1>
-                <p className="mt-1 max-w-xs text-sm text-black/50">
-                  If you already a member, easily log in now.
+            {error && (
+              <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 text-sm rounded-xl text-center">
+                {error}
+              </div>
+            )}
+
+            <form className="space-y-4" onSubmit={handleLogin}>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Email"
+                  required
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1">
+                  Password
+                </label>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Password"
+                  required
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+                />
+                <div className="text-right mt-2">
+                  <a
+                    href="#"
+                    className="text-xs text-gray-500 hover:text-orange-600 transition-colors"
+                  >
+                    Forgot Password?
+                  </a>
+                </div>
+              </div>
+
+              <div className="py-4 flex items-center before:flex-1 before:border-t before:border-gray-200 after:flex-1 after:border-t after:border-gray-200">
+                <p className="mx-4 text-xs text-gray-400 font-medium uppercase">
+                  Or login with
                 </p>
               </div>
 
-              <form onSubmit={handleLogin} className="space-y-4">
-                {error && (
-                  <div className="rounded-lg bg-red-50 p-3 text-sm text-red-600">
-                    {error}
-                  </div>
+              <button 
+                type="submit"
+                disabled={isLoading}
+                className="w-full bg-orange-600 text-white font-bold py-3.5 rounded-xl hover:bg-orange-700 transition-all shadow-lg shadow-orange-200 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center"
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Logging in...
+                  </>
+                ) : (
+                  "Login"
                 )}
+              </button>
 
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-black/70">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    placeholder="Email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="h-12 w-full rounded-lg border border-black/10 bg-white px-4 text-sm outline-none transition focus:border-[#D8732E]/60 focus:ring-4 focus:ring-[#D8732E]/10"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-black/70">
-                    Password
-                  </label>
-                  <input
-                    type="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="h-12 w-full rounded-lg border border-black/10 bg-white px-4 text-sm outline-none transition focus:border-[#D8732E]/60 focus:ring-4 focus:ring-[#D8732E]/10"
-                  />
-                </div>
-
-                <div className="flex items-center justify-end">
-                  <button
-                    type="button"
-                    className="text-sm font-medium text-black/40 hover:text-black/60"
-                  >
-                    Forgot Password?
-                  </button>
-                </div>
-
-                <div className="relative py-2">
-                  <div className="h-px w-full bg-black/10" />
-                  <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white px-3 text-xs text-black/40">
-                    Or login with
-                  </span>
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={isLoading}
-                  className="h-12 w-full rounded-lg bg-[#D8732E] text-sm font-semibold text-white shadow-[0_14px_30px_-18px_rgba(216,115,46,0.8)] transition hover:brightness-105 active:brightness-95 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isLoading ? "Logging in..." : "Login"}
-                </button>
-
-                <button
-                  type="button"
-                  className="flex h-11 w-full items-center justify-center gap-3 rounded-lg border border-gray-200 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
-                >
-                  <img src={google} alt="Google" className="h-5 w-5" />
+              <button
+                type="button"
+                className="w-full flex items-center justify-center gap-3 bg-white border border-gray-200 py-3 rounded-xl hover:bg-gray-50 transition-all"
+              >
+                <img
+                  src="https://www.svgrepo.com/show/475656/google-color.svg"
+                  alt="Google"
+                  className="w-5 h-5"
+                />
+                <span className="text-sm font-semibold text-gray-700">
                   Continue with Google
-                </button>
+                </span>
+              </button>
+            </form>
 
-                <p className="pt-2 text-center text-xs text-black/50">
-                  Do not have an account?{" "}
-                  <a
-                    href="#"
-                    className="font-semibold text-[#D8732E] hover:opacity-80"
-                  >
-                    Register
-                  </a>
-                </p>
-              </form>
+            <div className="mt-8 text-center">
+              <p className="text-sm text-gray-600">
+                Do not have an account?{" "}
+                <Link
+                  to="/auth"
+                  className="text-orange-600 font-bold hover:underline"
+                >
+                  Register
+                </Link>
+              </p>
             </div>
           </div>
+        </div>
 
-          <div className="hidden lg:block">
-            <div className="relative">
-              <div className="absolute -inset-6 rounded-[32px] bg-white/30 blur-2xl" />
-              <img
-                src={picture}
-                alt="Login illustration"
-                className="relative w-full max-w-[680px] select-none object-contain"
-                draggable="false"
-              />
-            </div>
-          </div>
-
-          <div className="lg:hidden">
-            <div className="mt-2 overflow-hidden rounded-2xl border border-black/5 bg-white/40 p-4">
-              <img
-                src="/images/your-hero.png"
-                alt="Login illustration"
-                className="w-full object-contain"
-                draggable="false"
-              />
-            </div>
+        {/* Right Side: Illustration (Hidden on mobile) */}
+        <div className="hidden lg:flex justify-center items-center">
+          <div className="relative">
+            {/* Note: In a real project, replace this placeholder with your actual SVG or Illustration */}
+            <img
+              src="https://cdni.iconscout.com/illustration/premium/thumb/online-registration-4437048-3705030.png"
+              alt="Login Illustration"
+              className="max-w-lg drop-shadow-2xl"
+            />
           </div>
         </div>
       </div>
     </div>
   );
-}
+};
+
+export default LoginPage;

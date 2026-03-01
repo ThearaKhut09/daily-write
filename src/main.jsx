@@ -13,6 +13,7 @@ import SaveBlog from "./pages/SaveBlog.jsx";
 import Layout from "./layout.jsx";
 import { store } from "./app/store.js";
 import { Provider } from "react-redux";
+import LoginPage from "./pages/Auth.jsx";
 
 const router = createBrowserRouter([
   {
@@ -47,11 +48,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/auth",
-    element: <Auth />,
+    element: <LoginPage />,
   },
   {
     path: "/auth1",
-    element: <Auth1 />,
+    element: <LoginPage />,
   },
   {
     path: "/save-blog",

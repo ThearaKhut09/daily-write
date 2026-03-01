@@ -1,10 +1,6 @@
-import { fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { createApi } from "@reduxjs/toolkit/query/react";
+import { baseApi } from "../../baseApi";
 
-export const productApi = createApi({
-  reducerPath: "productApi",
-  tagTypes: ["Comment"],
-  baseQuery: fetchBaseQuery({ baseUrl: `${import.meta.env.VITE_BASE_URL}/api/v100` }),
+export const productApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     // getallproducts
     getAllProduct: builder.query({

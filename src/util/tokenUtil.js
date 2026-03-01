@@ -1,12 +1,32 @@
-// Simple token storage
-export const storeToken = (token) => {
-  localStorage.setItem("token", token);
+import { AES, enc } from "crypto-js";
+import secureLocalStorage from "react-secure-storage";
+// set up machanism of encrypt and decrypted accesstoken
+const ENCRYPT_KEY = "secure-storage";
+//set up encrypt with crypto-js to encrypted the accesstoken
+export const encrtypedToken = (encrypted) => {
+  const dataEncrypted = AES.encrypt(encrypted, ENCRYPT_KEY).toString();
+  console.log("========?dataEncrypted: ", dataEncrypted);
+  return dataEncrypted;
 };
-
-export const getToken = () => {
-  return localStorage.getItem("token");
+//store accessToken
+export const storeAccessToken = (accessToken) => {
+  console.log("=====> accessToken: <====", accessToken);
+  const dataEncrypted = encrtypedToken(accessToken);
+  console.log("=======? ", dataEncrypted);
+  secureLocalStorage.setItem(ENCRYPT_KEY, dataEncrypted);
 };
-
-export const clearToken = () => {
-  localStorage.removeItem("token");
+// descrypted accessToken
+export const decryptedAccessToken = (encryptedToken) => {
+  if (encrtypedToken) {
+    const descryptedAccessToken = AES.decrypt(encryptedToken, ENCRYPT_KEY);
+    return descryptedAccessToken.toString(enc.Utf8);
+  }
+};
+export const getDecryptedAccessToken = () => {
+  const encryptedToken = secureLocalStorage.getItem(ENCRYPT_KEY);
+  console.log("The encryptedToken: ", encryptedToken);
+  if (encryptedToken) {
+    return decryptedAccessToken(encryptedToken);
+  }
+  return null;
 };
