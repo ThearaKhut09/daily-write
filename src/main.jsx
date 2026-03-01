@@ -7,7 +7,6 @@ import BlogList from "./pages/BlogList.jsx";
 import BlogPost from "./pages/BlogPost.jsx";
 import Profile from "./pages/Profile.jsx";
 import BlogDetail from "./pages/BlogDetail.jsx";
-import SaveBlog from "./pages/SaveBlog.jsx";
 import Layout from "./layout.jsx";
 import { store } from "./app/store.js";
 import { Provider } from "react-redux";
@@ -35,10 +34,6 @@ const router = createBrowserRouter([
         element: <BlogPost />,
       },
       {
-        path: "/profile",
-        element: <Profile />,
-      },
-      {
         path: "/blogs/:uuid",
         element: <BlogDetail />,
       },
@@ -48,10 +43,10 @@ const router = createBrowserRouter([
     path: "/auth",
     element: <LoginPage />,
   },
-  {
-    path: "/save-blog",
-    element: <SaveBlog />,
-  },
+        {
+        path: "/profile",
+        element: <Profile />,
+      },
 ]);
 ReactDOM.createRoot(document.getElementById("root")).render(
   <Provider store={store}>
