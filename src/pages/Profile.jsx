@@ -16,6 +16,7 @@ import { useNavigate } from "react-router-dom";
 import { useGetAllProductQuery } from "../app/features/services/productApi";
 import ListBlog from "../components/BlogPage/ListBlog";
 import About from "../components/Profile/About";
+import Blog from "../components/Profile/Blog";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -187,7 +188,7 @@ const Profile = () => {
 
               <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {/* Card blog */}
-                <ListBlog page={page} pageSize={pageSize} />
+                <Blog page={page} pageSize={pageSize} />
               </div>
 
               <div className="mt-8 flex items-center justify-center gap-2 text-sm">
