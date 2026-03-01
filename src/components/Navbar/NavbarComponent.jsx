@@ -93,9 +93,6 @@ export default function NavbarComponent() {
                     <User className="text-primary-orange" size={20} />
                   )}
                 </div>
-                <span className="hidden lg:block text-sm font-bold text-text-main max-w-25 truncate">
-                  {user.fullName}
-                </span>
               </button>
 
               {showProfileMenu && (
