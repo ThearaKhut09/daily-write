@@ -15,77 +15,7 @@ import { getDecryptedRefreshToken, clearTokens } from "../util/tokenUtil";
 import { useNavigate } from "react-router-dom";
 import { useGetAllProductQuery } from "../app/features/services/productApi";
 import ListBlog from "../components/BlogPage/ListBlog";
-
-const BlogCard = ({
-  category,
-  title,
-  description,
-  time,
-  likes,
-  saves,
-  image,
-  tagColor,
-  authorName,
-  authorImage,
-}) => (
-  <div className="bg-(--bg-primary) rounded-2xl shadow-sm border border-(--border-color) overflow-hidden flex flex-col">
-    {/* Card Header */}
-    <div className="p-3 flex items-center gap-2">
-      <img
-        src={
-          authorImage || "https://api.dicebear.com/7.x/avataaars/svg?seed=User"
-        }
-        alt="avatar"
-        className="w-6 h-6 rounded-full border border-(--border-color) object-cover"
-      />
-      <span className="text-xs font-medium text-(--text-primary)">{authorName}</span>
-    </div>
-
-    {/* Image Container */}
-    <div className="relative h-40 w-full bg-(--bg-secondary)">
-      <img src={image} alt={title} className="w-full h-full object-cover" />
-      <span
-        className={`absolute bottom-2 left-2 text-[10px] px-2 py-0.5 rounded text-white font-medium ${tagColor}`}
-      >
-        {category}
-      </span>
-    </div>
-
-    {/* Content */}
-    <div className="p-4 flex-1">
-      <h3 className="font-bold text-sm leading-tight mb-2 text-(--text-primary)">
-        {title}
-      </h3>
-      <p className="text-xs text-(--text-secondary) line-clamp-2 mb-4">{description}</p>
-
-      <div className="mt-auto">
-        <span className="text-[10px] text-(--text-secondary) block mb-3">{time}</span>
-        <div className="flex items-center justify-between">
-          <div className="flex gap-3 text-(--text-secondary)">
-            <div className="flex items-center gap-1">
-              <Heart size={14} className="text-(--primary-500) fill-(--primary-500)" />
-              <span className="text-[10px] font-bold text-(--text-primary)">
-                {likes}
-              </span>
-            </div>
-            <div className="flex items-center gap-1">
-              <BookmarkIcon
-                size={14}
-                className="text-(--primary-500) fill-(--primary-500)"
-              />
-              <span className="text-[10px] font-bold text-(--text-primary)">
-                {saves}
-              </span>
-            </div>
-          </div>
-          <button className="bg-(--primary-500) hover:bg-primary-600 text-white text-[10px] font-bold py-1.5 px-4 rounded-lg transition-colors">
-            Read More
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-);
+import About from "../components/Profile/About";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -95,12 +25,9 @@ const Profile = () => {
 
   const { data } = useGetAllProductQuery({ pageNumber: page, pageSize });
   const totalPages = data?.data?.totalPages || 0;
+  const [activeTab, setActiveTab] = useState("blogs");
 
-  const {
-    data: userData,
-    isLoading,
-    isError,
-  } = useGetCurrentUserQuery(undefined, {
+  const { data: userData, isLoading } = useGetCurrentUserQuery(undefined, {
     skip: !token,
   });
 
@@ -125,7 +52,7 @@ const Profile = () => {
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-(--bg-primary)">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--primary-500)]"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-(--primary-500)"></div>
       </div>
     );
   }
@@ -175,22 +102,28 @@ const Profile = () => {
           <div className="w-8 h-8 bg-(--primary-500) bg-opacity-10 rounded-lg flex items-center justify-center">
             <span className="text-(--primary-500) text-xl">🖋️</span>
           </div>
-          <h1 className="font-bold text-xl text-(--text-primary)">DailyWrite</h1>
+          <h1 className="font-bold text-xl text-(--text-primary)">
+            DailyWrite
+          </h1>
         </div>
 
         <nav className="space-y-2">
-          <button className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-(--primary-500) text-white font-medium shadow-md" style={{ boxShadow: '0 4px 6px -1px rgba(244, 128, 36, 0.2)' }}>
+          <button
+            onClick={() => setActiveTab("blogs")}
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-(--primary-500) text-white font-medium shadow-md"
+            style={{ boxShadow: "0 4px 6px -1px rgba(244, 128, 36, 0.2)" }}
+          >
             <User size={18} /> Profile
           </button>
           <button
-            onClick={() => navigate("/about")}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-(--primary-500) hover:bg-(--primary-500) hover:bg-opacity-10 font-medium transition-all"
+            onClick={() => setActiveTab("about")}
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-(--primary-500) hover:bg-(--primary-500) hover:text-white hover:bg-opacity-10 font-medium transition-all"
           >
             <Info size={18} /> About
           </button>
           <button
-            onClick={() => navigate("/save-blog")}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-(--primary-500) hover:bg-(--primary-500) hover:bg-opacity-10 font-medium transition-all"
+            onClick={() => setActiveTab("saved")}
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-(--primary-500) hover:bg-(--primary-500) hover:text-white hover:bg-opacity-10 font-medium transition-all"
           >
             <Bookmark size={18} /> Saved
           </button>
@@ -203,7 +136,7 @@ const Profile = () => {
         <header className="flex justify-between items-start mb-12">
           <div className="flex flex-col items-center mx-auto">
             <div className="relative">
-              <div className="w-24 h-24 rounded-full border-4 border-[var(--primary-500)] overflow-hidden bg-(--bg-secondary) flex items-center justify-center">
+              <div className="w-24 h-24 rounded-full border-4 border-(--primary-500) overflow-hidden bg-(--bg-secondary) flex items-center justify-center">
                 {user?.profileUrl ? (
                   <img
                     src={user.profileUrl}
@@ -237,61 +170,69 @@ const Profile = () => {
           </button>
         </header>
 
-        {/* Blogs Feed */}
-        <div className="max-w-6xl mx-auto">
-          <div className="flex justify-center items-center mb-8 relative">
-            <h2 className="text-4xl font-black text-(--primary-500) tracking-tight">
-              Blogs
-            </h2>
-            <div className="absolute right-0 flex items-center gap-2 text-sm">
-              <span className="text-(--text-secondary)">Sort by:</span>
-              <button className="flex items-center gap-1 border border-(--border-color) rounded-lg px-3 py-1 bg-(--bg-primary) text-(--text-primary)">
-                Latest <ChevronDown size={14} />
-              </button>
-            </div>
-          </div>
+        {activeTab === "blogs" && (
+          <>
+            <section className="max-w-6xl mx-auto">
+              <div className="flex justify-center items-center mb-8 relative">
+                <h2 className="text-4xl font-black text-(--primary-500) tracking-tight">
+                  Blogs
+                </h2>
+                <div className="absolute right-0 flex items-center gap-2 text-sm">
+                  <span className="text-(--text-secondary)">Sort by:</span>
+                  <button className="flex items-center gap-1 border border-(--border-color) rounded-lg px-3 py-1 bg-(--bg-primary) text-(--text-primary)">
+                    Latest <ChevronDown size={14} />
+                  </button>
+                </div>
+              </div>
 
-          <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {/* Card blog */}
-            <ListBlog page={page} pageSize={pageSize} />
-          </div>
+              <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                {/* Card blog */}
+                <ListBlog page={page} pageSize={pageSize} />
+              </div>
 
-          <div className="mt-8 flex items-center justify-center gap-2 text-sm">
-            <button
-              onClick={() => setPage((p) => Math.max(0, p - 1))}
-              disabled={page === 0}
-              className="rounded-md border border-(--border-color) px-2 py-1 text-(--text-secondary) hover:bg-(--bg-secondary) disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <ChevronLeft size={16} />
-            </button>
-            {getPageNumbers().map((pageNum, idx) =>
-              pageNum === "..." ? (
-                <span key={idx} className="px-2 text-(--text-secondary)">
-                  ...
-                </span>
-              ) : (
+              <div className="mt-8 flex items-center justify-center gap-2 text-sm">
                 <button
-                  key={idx}
-                  onClick={() => setPage(pageNum)}
-                  className={`rounded-md px-3 py-1 ${
-                    page === pageNum
-                      ? "bg-(--primary-500) text-white"
-                      : "border border-(--border-color) text-(--text-secondary) hover:bg-(--bg-secondary)"
-                  }`}
+                  onClick={() => setPage((p) => Math.max(0, p - 1))}
+                  disabled={page === 0}
+                  className="rounded-md border border-(--border-color) px-2 py-1 text-(--text-secondary) hover:bg-(--bg-secondary) disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {pageNum + 1}
+                  <ChevronLeft size={16} />
                 </button>
-              ),
-            )}
-            <button
-              onClick={() => setPage((p) => p + 1)}
-              disabled={page >= totalPages - 1}
-              className="rounded-md border border-(--border-color) px-2 py-1 text-(--text-secondary) hover:bg-(--bg-secondary) disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <ChevronRight size={16} />
-            </button>
-          </div>
-        </div>
+                {getPageNumbers().map((pageNum, idx) =>
+                  pageNum === "..." ? (
+                    <span key={idx} className="px-2 text-(--text-secondary)">
+                      ...
+                    </span>
+                  ) : (
+                    <button
+                      key={idx}
+                      onClick={() => setPage(pageNum)}
+                      className={`rounded-md px-3 py-1 ${
+                        page === pageNum
+                          ? "bg-(--primary-500) text-white"
+                          : "border border-(--border-color) text-(--text-secondary) hover:bg-(--bg-secondary)"
+                      }`}
+                    >
+                      {pageNum + 1}
+                    </button>
+                  ),
+                )}
+                <button
+                  onClick={() => setPage((p) => p + 1)}
+                  disabled={page >= totalPages - 1}
+                  className="rounded-md border border-(--border-color) px-2 py-1 text-(--text-secondary) hover:bg-(--bg-secondary) disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <ChevronRight size={16} />
+                </button>
+              </div>
+            </section>
+          </>
+        )}
+        {activeTab === "about" && (
+          <>
+            <About/>
+          </>
+        )}
       </main>
     </div>
   );
