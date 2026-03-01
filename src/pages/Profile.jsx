@@ -133,7 +133,7 @@ const Profile = () => {
       {/* Main Content */}
       <main className="flex-1 ml-64 p-8">
         {/* Header Section */}
-        <header className="flex justify-between items-start mb-12">
+        <header className="flex justify-between items-start">
           <div className="flex flex-col items-center mx-auto">
             <div className="relative">
               <div className="w-24 h-24 rounded-full border-4 border-(--primary-500) overflow-hidden bg-(--bg-secondary) flex items-center justify-center">
@@ -173,7 +173,7 @@ const Profile = () => {
         {activeTab === "blogs" && (
           <>
             <section className="max-w-6xl mx-auto">
-              <div className="flex justify-center items-center mb-8 relative">
+              <div className="flex justify-center items-center my-8  relative">
                 <h2 className="text-4xl font-black text-(--primary-500) tracking-tight">
                   Blogs
                 </h2>
@@ -230,7 +230,76 @@ const Profile = () => {
         )}
         {activeTab === "about" && (
           <>
-            <About/>
+            <About
+              key={user.uuid}
+              fullName={user.fullName}
+              email={user.email}
+              coverUrl={user.coverUrl}
+              bio={user.bio}
+              createdAt={new Date(user.createdAt).toLocaleDateString("en-US", {
+                month: "short",
+                day: "numeric",
+                year: "numeric",
+              })}
+            />
+          </>
+        )}
+        {activeTab === "save" && (
+          <>
+            <section className="max-w-6xl mx-auto">
+              <div className="flex justify-center items-center my-8  relative">
+                <h2 className="text-4xl font-black text-(--primary-500) tracking-tight">
+                  Blogs
+                </h2>
+                <div className="absolute right-0 flex items-center gap-2 text-sm">
+                  <span className="text-(--text-secondary)">Sort by:</span>
+                  <button className="flex items-center gap-1 border border-(--border-color) rounded-lg px-3 py-1 bg-(--bg-primary) text-(--text-primary)">
+                    Latest <ChevronDown size={14} />
+                  </button>
+                </div>
+              </div>
+
+              <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                {/* Card blog */}
+                <ListBlog page={page} pageSize={pageSize} />
+              </div>
+
+              <div className="mt-8 flex items-center justify-center gap-2 text-sm">
+                <button
+                  onClick={() => setPage((p) => Math.max(0, p - 1))}
+                  disabled={page === 0}
+                  className="rounded-md border border-(--border-color) px-2 py-1 text-(--text-secondary) hover:bg-(--bg-secondary) disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <ChevronLeft size={16} />
+                </button>
+                {getPageNumbers().map((pageNum, idx) =>
+                  pageNum === "..." ? (
+                    <span key={idx} className="px-2 text-(--text-secondary)">
+                      ...
+                    </span>
+                  ) : (
+                    <button
+                      key={idx}
+                      onClick={() => setPage(pageNum)}
+                      className={`rounded-md px-3 py-1 ${
+                        page === pageNum
+                          ? "bg-(--primary-500) text-white"
+                          : "border border-(--border-color) text-(--text-secondary) hover:bg-(--bg-secondary)"
+                      }`}
+                    >
+                      {pageNum + 1}
+                    </button>
+                  ),
+                )}
+                <button
+                  onClick={() => setPage((p) => p + 1)}
+                  disabled={page >= totalPages - 1}
+                  className="rounded-md border border-(--border-color) px-2 py-1 text-(--text-secondary) hover:bg-(--bg-secondary) disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <ChevronRight size={16} />
+                </button>
+              </div>
+            </section>
           </>
         )}
       </main>
