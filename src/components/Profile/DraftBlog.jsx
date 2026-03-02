@@ -33,7 +33,6 @@ export default function DraftBlog({ page = 0, pageSize = 12 }) {
     return <div>Error loading drafts</div>;
   }
 
-  // Filter only DRAFT blogs for the drafts tab that belong to current user
   const userDraftBlogs = productData.filter(
     (blog) => blog.authorUuid === currentUser?.uuid && blog.status === "DRAFT"
   );
@@ -45,6 +44,7 @@ export default function DraftBlog({ page = 0, pageSize = 12 }) {
       </div>
     );
   }
+
 
   return (
     <>
