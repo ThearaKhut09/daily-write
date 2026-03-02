@@ -16,7 +16,7 @@ const customBaseQuery = fetchBaseQuery({
 
 export const baseApi = createApi({
     reducerPath: 'baseApi',
-    tagTypes: ["Comment"],
+    tagTypes: ["Comment", "User"],
     baseQuery: customBaseQuery,
     endpoints: (builder) => ({})
 })

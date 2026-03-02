@@ -112,22 +112,48 @@ const Profile = () => {
         <nav className="space-y-2">
           <button
             onClick={() => setActiveTab("blogs")}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-(--primary-500) text-white font-medium shadow-md"
-            style={{ boxShadow: "0 4px 6px -1px rgba(244, 128, 36, 0.2)" }}
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${
+              activeTab === "blogs"
+                ? "bg-(--primary-500) text-white shadow-md"
+                : "text-(--primary-500) hover:bg-(--primary-500) hover:text-white hover:bg-opacity-10"
+            }`}
+            style={
+              activeTab === "blogs"
+                ? { boxShadow: "0 4px 6px -1px rgba(244, 128, 36, 0.2)" }
+                : {}
+            }
           >
             <User size={18} /> Profile
           </button>
           <button
             onClick={() => setActiveTab("about")}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-(--primary-500) hover:bg-(--primary-500) hover:text-white hover:bg-opacity-10 font-medium transition-all"
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${
+              activeTab === "about"
+                ? "bg-(--primary-500) text-white shadow-md"
+                : "text-(--primary-500) hover:bg-(--primary-500) hover:text-white hover:bg-opacity-10"
+            }`}
+            style={
+              activeTab === "about"
+                ? { boxShadow: "0 4px 6px -1px rgba(244, 128, 36, 0.2)" }
+                : {}
+            }
           >
             <Info size={18} /> About
           </button>
           <button
-            onClick={() => setActiveTab("saved")}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-(--primary-500) hover:bg-(--primary-500) hover:text-white hover:bg-opacity-10 font-medium transition-all"
+            onClick={() => setActiveTab("draft")}
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${
+              activeTab === "draft"
+                ? "bg-(--primary-500) text-white shadow-md"
+                : "text-(--primary-500) hover:bg-(--primary-500) hover:text-white hover:bg-opacity-10"
+            }`}
+            style={
+              activeTab === "draft"
+                ? { boxShadow: "0 4px 6px -1px rgba(244, 128, 36, 0.2)" }
+                : {}
+            }
           >
-            <Bookmark size={18} /> Saved
+            <Bookmark size={18} /> Draft
           </button>
         </nav>
       </aside>
@@ -234,8 +260,10 @@ const Profile = () => {
           <>
             <About
               key={user.uuid}
+              uuid={user.uuid}
               fullName={user.fullName}
               email={user.email}
+              profileUrl={user.profileUrl}
               coverUrl={user.coverUrl}
               bio={user.bio}
               createdAt={new Date(user.createdAt).toLocaleDateString("en-US", {
@@ -246,7 +274,7 @@ const Profile = () => {
             />
           </>
         )}
-        {activeTab === "saved" && (
+        {activeTab === "draft" && (
           <>
             <section className="max-w-6xl mx-auto">
               <div className="flex justify-center items-center my-8  relative">

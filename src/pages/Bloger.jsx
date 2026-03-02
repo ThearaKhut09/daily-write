@@ -1,20 +1,62 @@
 import React from "react";
+import { useParams } from "react-router-dom";
 import BlogCard from "../components/Card/BlogCard";
+import { 
+  useGetAllUserQuery, 
+  useGetAllProductByCurrentUserUuidQuery 
+} from "../app/features/services/productApi";
 
 export default function Bloger() {
+  const { uuid } = useParams();
+
+  // Fetch all users to find the specific blogger
+  const { data: usersResult, isLoading: usersLoading } = useGetAllUserQuery();
+  
+  // Fetch blogs by this specific author
+  const { 
+    data: blogsResult, 
+    isLoading: blogsLoading 
+  } = useGetAllProductByCurrentUserUuidQuery({ userUuid: uuid });
+
+  // Handle both direct blog return and wrapped response
+  const users = usersResult?.data?.content || usersResult || [];
+  const blogger = users.find((u) => u.uuid === uuid);
+  const blogs = blogsResult?.data?.content || blogsResult || [];
+
+  if (usersLoading || blogsLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-orange-50/30">
+        <p className="text-lg text-orange-500 animate-pulse font-semibold">Loading Blogger Profile...</p>
+      </div>
+    );
+  }
+
+  if (!blogger) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-orange-50/30">
+        <div className="text-center">
+          <p className="text-2xl font-bold text-gray-800 mb-2">Blogger Not Found</p>
+          <p className="text-gray-500">The user you are looking for does not exist or has been removed.</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-orange-50/30 min-h-screen p-6 md:p-12 font-sans text-gray-800 relative overflow-hidden">
+      {/* Decorative Background */}
       <div className="absolute -top-20 -left-20 w-64 h-64 border border-orange-200 rounded-full opacity-50"></div>
       <div className="absolute -top-10 -left-10 w-64 h-64 border border-orange-200 rounded-full opacity-50"></div>
 
       <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8 relative z-10">
+        {/* Sidebar: Blogger Profile */}
         <aside className="w-full lg:w-1/4">
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 flex flex-col items-center text-center">
             <div className="relative mb-4">
-              <div className="w-24 h-24 rounded-full border-4 border-yellow-400 overflow-hidden">
+              <div className="w-24 h-24 rounded-full border-4 border-orange-400 overflow-hidden">
                 <img
-                  src="https://placekitten.com/200/200"
-                  alt="Profile"
+                  src={blogger.profileUrl || "https://via.placeholder.com/150"}
+                  alt={blogger.fullName}
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -23,18 +65,20 @@ export default function Bloger() {
               </div>
             </div>
 
-            <h2 className="text-xl font-bold text-gray-900">Ratanak kib zin</h2>
-            <p className="text-gray-500 text-sm mb-6">muah@gmail.com</p>
+            <h2 className="text-xl font-bold text-gray-900">{blogger.fullName}</h2>
+            <p className="text-gray-500 text-sm mb-6 truncate w-full">{blogger.email}</p>
 
             <div className="w-full border-t border-gray-100 pt-6 mb-6">
               <p className="text-gray-400 text-xs uppercase tracking-wider mb-1">
                 Member Since
               </p>
-              <p className="text-lg font-bold text-gray-700">June 2025</p>
+              <p className="text-lg font-bold text-gray-700">
+                {blogger.createdAt ? new Date(blogger.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : "N/A"}
+              </p>
             </div>
 
             <div className="w-full space-y-3">
-              <button className="w-full bg-orange-500 text-white rounded-xl py-3 px-4 flex items-center justify-center gap-2 font-medium">
+              <div className="w-full bg-orange-500 text-white rounded-xl py-3 px-4 flex items-center justify-center gap-2 font-medium shadow-sm">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-5 w-5"
@@ -42,106 +86,71 @@ export default function Bloger() {
                   fill="currentColor"
                 >
                   <path
-                    fill-rule="evenodd"
+                    fillRule="evenodd"
                     d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                    clip-rule="evenodd"
+                    clipRule="evenodd"
                   />
                 </svg>
-                PROFILE
-              </button>
-              <button className="w-full text-orange-500 py-3 px-4 flex items-center justify-center gap-2 font-medium hover:bg-orange-50 rounded-xl transition">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-                ABOUT
-              </button>
+                AUTHOR
+              </div>
             </div>
           </div>
         </aside>
 
+        {/* Main Content: Blogger's Blogs */}
         <main className="w-full lg:w-3/4">
           <div className="flex justify-between items-center mb-8">
-            <h1 className="text-3xl font-bold text-orange-500">Blogs</h1>
+            <h1 className="text-3xl font-bold text-orange-500">
+              Blogs by {blogger.fullName.split(' ')[0]}
+            </h1>
             <div className="flex items-center gap-2 text-sm">
-              <span className="text-gray-400">Sort by:</span>
-              <select className="bg-white border border-gray-200 rounded-lg px-3 py-1 outline-none focus:ring-1 focus:ring-orange-500">
-                <option>Latest</option>
-                <option>Popular</option>
-              </select>
+              <span className="text-gray-400">Total:</span>
+              <span className="font-bold text-orange-600">{blogs.length} Posts</span>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-10">
-            <BlogCard
-              key={blog.id}
-              image={blog.thumbnailUrl}
-              author={author?.fullName || "Unknown Author"}
-              tag={blog.blogCategory}
-              title={blog.title}
-              summary={blog.content}
-              views={blog.view}
-              time={new Date(blog.createdAt).toLocaleDateString()}
-              userImage={author?.profileUrl}
-              uuid={blog.uuid}
-            />
-          </div>
-
-          <div className="flex justify-center items-center gap-2">
-            <button className="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-200 text-gray-500 hover:bg-gray-300">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4"
-                fill="none"
-                viewBox="0 0 24 24"
+          {blogs.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-10">
+              {blogs.map((blog) => (
+                <BlogCard
+                  key={blog.uuid}
+                  image={blog.thumbnailUrl}
+                  author={blogger.fullName}
+                  tag={blog.blogCategory}
+                  title={blog.title}
+                  summary={blog.content}
+                  views={blog.view}
+                  time={new Date(blog.createdAt).toLocaleDateString()}
+                  userImage={blogger.profileUrl}
+                  uuid={blog.uuid}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="bg-white rounded-2xl p-12 text-center border border-dashed border-gray-300">
+              <svg 
+                className="mx-auto h-12 w-12 text-gray-300 mb-4" 
+                fill="none" 
+                viewBox="0 0 24 24" 
                 stroke="currentColor"
               >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M15 19l-7-7 7-7"
+                <path 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  strokeWidth={1} 
+                  d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10l4 4v10a2 2 0 01-2 2z" 
+                />
+                <path 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  strokeWidth={1} 
+                  d="M14 4v4h4" 
                 />
               </svg>
-            </button>
-            <button className="w-8 h-8 rounded-lg bg-orange-500 text-white font-bold text-sm">
-              1
-            </button>
-            <button className="w-8 h-8 rounded-lg bg-gray-200 text-gray-600 font-bold text-sm hover:bg-gray-300">
-              2
-            </button>
-            <span className="text-gray-400">...</span>
-            <button className="w-8 h-8 rounded-lg bg-gray-200 text-gray-600 font-bold text-sm hover:bg-gray-300">
-              10
-            </button>
-            <button className="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-200 text-gray-500 hover:bg-gray-300">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
-            </button>
-          </div>
-        </main>c
+              <p className="text-gray-500 font-medium">This author hasn't published any blogs yet.</p>
+            </div>
+          )}
+        </main>
       </div>
     </div>
   );

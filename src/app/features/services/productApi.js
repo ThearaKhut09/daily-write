@@ -44,6 +44,27 @@ export const productApi = baseApi.injectEndpoints({
         { type: "Comment", id: blogUuid },
       ],
     }),
+
+    patchUser: builder.mutation({
+      query: ({ uuid, payload }) => ({
+        url: `/users/${uuid}`,
+        method: "PATCH",
+        body: payload,
+      }),
+      invalidatesTags: ["User"],
+    }),
+
+    uploadMedia: builder.mutation({
+      query: (file) => {
+        const formData = new FormData();
+        formData.append("file", file);
+        return {
+          url: "/medias",
+          method: "POST",
+          body: formData,
+        };
+      },
+    }),
   }),
 });
 
@@ -58,4 +79,6 @@ export const {
   useGetAllProductByCurrentUserUuidQuery,
   useGetCommentsByBlogQuery,
   useCreateCommentMutation,
+  usePatchUserMutation,
+  useUploadMediaMutation,
 } = productApi;

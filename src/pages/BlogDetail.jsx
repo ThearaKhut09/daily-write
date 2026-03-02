@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Bookmark, Clock3, Eye, Heart, Link2 } from "lucide-react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import parse from "html-react-parser";
 import {
   useGetBlogByUuidQuery,
@@ -96,7 +96,7 @@ export default function BlogDetail() {
           </h1>
 
           <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-(--text-secondary)">
-            <div className="flex items-center gap-2">
+            <Link to={`/blogers/${author?.uuid}`} className="flex items-center gap-2 hover:opacity-80 transition-opacity">
               <img
                 src={author?.profileUrl}
                 alt={author?.fullName || "Author"}
@@ -108,7 +108,7 @@ export default function BlogDetail() {
                 </p>
                 <p className="mt-1 text-xs text-(--text-secondary)">{createdDate}</p>
               </div>
-            </div>
+            </Link>
             <span className="flex items-center gap-1 text-xs sm:text-sm text-(--text-secondary)">
               <Clock3 size={14} /> 10 min read
             </span>

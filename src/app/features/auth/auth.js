@@ -24,6 +24,7 @@ export const auth = baseApi.injectEndpoints({
           },
         };
       },
+      providesTags: ["User"],
     }),
   }),
 });
