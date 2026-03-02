@@ -34,6 +34,7 @@ export const productApi = baseApi.injectEndpoints({
       ],
     }),
 
+
     createComment: builder.mutation({
       query: ({ blogUuid, userUuid, content }) => ({
         url: "/comments",
@@ -72,6 +73,7 @@ export const productApi = baseApi.injectEndpoints({
         body: formData,
       }),
     }),
+
     createBlog: builder.mutation({
       query: (payload) => ({
         url: "/blogs",
@@ -96,5 +98,5 @@ export const {
   usePatchUserMutation,
   useUploadMediaMutation,
   useUploadMediaMutation,
-  useCreateBlogMutation,
+  useCreateBlogMutation
 } = productApi;
