@@ -33,7 +33,7 @@ export const productApi = baseApi.injectEndpoints({
         { type: "Comment", id: blogUuid },
       ],
     }),
-    
+
     createComment: builder.mutation({
       query: ({ blogUuid, userUuid, content }) => ({
         url: "/comments",
@@ -65,6 +65,20 @@ export const productApi = baseApi.injectEndpoints({
         };
       },
     }),
+    uploadMedia: builder.mutation({
+      query: (formData) => ({
+        url: "/medias",
+        method: "POST",
+        body: formData,
+      }),
+    }),
+    createBlog: builder.mutation({
+      query: (payload) => ({
+        url: "/blogs",
+        method: "POST",
+        body: payload,
+      }),
+    }),
   }),
 });
 
@@ -81,4 +95,6 @@ export const {
   useCreateCommentMutation,
   usePatchUserMutation,
   useUploadMediaMutation,
+  useUploadMediaMutation,
+  useCreateBlogMutation,
 } = productApi;
