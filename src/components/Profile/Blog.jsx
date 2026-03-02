@@ -12,7 +12,7 @@ export default function Blog({ page = 0, pageSize = 12 }) {
 
   const { data, isLoading, isError } = useGetAllProductQuery({
     pageNumber: page,
-    pageSize,
+    pageSize: 100, // Fetch more to ensure we find user's blogs on client side
   });
   const { data: userData } = useGetAllUserQuery();
 
@@ -33,16 +33,18 @@ export default function Blog({ page = 0, pageSize = 12 }) {
     return <div>Error loading blogs</div>;
   }
 
-  // Filter blogs that belong to the current user
-  const userBlogs = productData.filter(blog => blog.authorUuid === currentUser?.uuid);
+  // Filter only PUBLISHED blogs for the main blog tab that belong to current user
+  const userPublishedBlogs = productData.filter(
+    (blog) => blog.authorUuid === currentUser?.uuid && blog.status === "PUBLISHED"
+  );
 
-  if (userBlogs.length === 0) {
-    return <div className="col-span-full py-10 text-center text-gray-500 text-lg">You haven't posted any blogs yet.</div>;
+  if (userPublishedBlogs.length === 0) {
+    return <div className="col-span-full py-10 text-center text-gray-500 text-lg">You haven't published any blogs yet.</div>;
   }
 
   return (
     <>
-      {userBlogs.map((blog) => (
+      {userPublishedBlogs.map((blog) => (
         <BlogCard
           key={blog.id}
           image={blog.thumbnailUrl}

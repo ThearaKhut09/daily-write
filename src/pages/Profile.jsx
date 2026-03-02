@@ -17,6 +17,7 @@ import { useGetAllProductQuery } from "../app/features/services/productApi";
 import ListBlog from "../components/BlogPage/ListBlog";
 import About from "../components/Profile/About";
 import Blog from "../components/Profile/Blog";
+import DraftBlog from "../components/Profile/DraftBlog";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -245,12 +246,12 @@ const Profile = () => {
             />
           </>
         )}
-        {activeTab === "save" && (
+        {activeTab === "saved" && (
           <>
             <section className="max-w-6xl mx-auto">
               <div className="flex justify-center items-center my-8  relative">
                 <h2 className="text-4xl font-black text-(--primary-500) tracking-tight">
-                  Blogs
+                  Drafts
                 </h2>
                 <div className="absolute right-0 flex items-center gap-2 text-sm">
                   <span className="text-(--text-secondary)">Sort by:</span>
@@ -261,8 +262,8 @@ const Profile = () => {
               </div>
 
               <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {/* Card blog */}
-                <ListBlog page={page} pageSize={pageSize} />
+                {/* Draft blogs */}
+                <DraftBlog page={page} pageSize={pageSize} />
               </div>
 
               <div className="mt-8 flex items-center justify-center gap-2 text-sm">
