@@ -1,4 +1,4 @@
-import { Eye, MessageSquare } from "lucide-react";
+import { Eye, MessageSquare, User } from "lucide-react";
 import parse from "html-react-parser";
 
 export default function BlogCard({
@@ -10,7 +10,7 @@ export default function BlogCard({
   views,
   comments,
   time,
-  userImage
+  userImage,
 }) {
   return (
     <article className="overflow-hidden rounded-2xl border border-border-main bg-bg-main shadow-sm transition hover:shadow-md">
@@ -18,11 +18,18 @@ export default function BlogCard({
         <img src={image} alt={title} className="h-full w-full object-cover" />
         <div className="absolute left-3 top-3 rounded-full bg-white px-2 py-1 text-[10px] font-semibold text-[#00b33d]">
           <div className="flex items-center gap-2">
-            <img
-              src={userImage}
-              alt={author}
-              className="h-6 w-6 rounded-full object-cover"
-            />
+            <div className="h-6 w-6 rounded-full overflow-hidden flex items-center justify-center bg-orange-50 border border-primary-orange">
+              {userImage ? (
+                <img
+                  src={userImage}
+                  alt={author}
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                <User size={14} className="text-primary-orange" />
+              )}
+            </div>
+
             <span className="text-xs font-semibold text-[#00b33d]">
               {author}
             </span>

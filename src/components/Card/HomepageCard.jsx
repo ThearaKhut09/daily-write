@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import parse from "html-react-parser";
 import { Link } from "react-router-dom";
+import { User } from "lucide-react";
 
 export function Card({
   title,
@@ -144,12 +145,16 @@ export function Card({
             isVisible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-8"
           }`}
         >
-          <div className="w-10 h-10 bg-primary-orange rounded-full flex items-center justify-center overflow-hidden">
-            <img
-              src={userImage}
-              alt={user}
-              className="w-full h-full object-cover"
-            />
+          <div className="w-10 h-10 bg-primary-orange rounded-full flex items-center justify-center overflow-hidden border-2 border-primary-orange bg-orange-50">
+            {userImage ? (
+              <img
+                src={userImage}
+                alt={user}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <User className="text-white" size={20} />
+            )}
           </div>
           <span className="font-bold text-text-sub">{user}</span>
         </div>
@@ -194,7 +199,7 @@ export function CardSidBar({
       }
     };
   }, []);
-
+  
   return (
     <div
       ref={cardRef}
@@ -252,12 +257,16 @@ export function CardSidBar({
                     : "opacity-0 translate-x-4"
                 }`}
               >
-                <div className="w-4 h-4 bg-primary-orange rounded-full flex items-center justify-center overflow-hidden">
-                  <img
-                    src={userImage}
-                    alt={user}
-                    className="w-full h-full object-cover"
-                  />
+                <div className="w-4 h-4 bg-primary-orange rounded-full flex items-center justify-center overflow-hidden bg-orange-50">
+                  {userImage ? (
+                    <img
+                      src={userImage}
+                      alt={user}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <User className="text-white" size={10} />
+                  )}
                 </div>{" "}
                 {user}
               </span>

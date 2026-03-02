@@ -4,14 +4,17 @@ export const productApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     // getallproducts
     getAllProduct: builder.query({
-      query: ({ pageNumber = 0, pageSize = 12 }) =>
-        `/blogs?pageNumber=${pageNumber}&pageSize=${pageSize}`,
+      query: ({ pageNumber = 0, pageSize = 12, sortBy = "createdAt,desc" }) =>
+        `/blogs?pageNumber=${pageNumber}&pageSize=${pageSize}&sortBy=${sortBy}`,
     }),
     getLatestBlogs: builder.query({
-      query: () => `/blogs?pageNumber=0&pageSize=6`,
+      query: () => `/blogs?pageNumber=0&pageSize=6&sortBy=createdAt,desc`,
+    }),
+    getTrendingBlogs: builder.query({
+      query: () => `/blogs?pageNumber=0&pageSize=6&sortBy=view,desc`,
     }),
     getSignleProduct: builder.query({
-      query: () => `/blogs?pageSize=1`,
+      query: () => `/blogs?pageSize=1&sortBy=view,desc`,
     }),
     getBlogByUuid: builder.query({
       query: (uuid) => `/blogs/${uuid}`,
@@ -46,6 +49,7 @@ export const {
   useGetAllUserQuery,
   useGetSignleProductQuery,
   useGetLatestBlogsQuery,
+  useGetTrendingBlogsQuery,
   useGetBlogByUuidQuery,
   useGetCommentsByBlogQuery,
   useCreateCommentMutation,

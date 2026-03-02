@@ -1,13 +1,22 @@
-import { useGetAllProductQuery, useGetAllUserQuery } from "../../app/features/services/productApi";
+import {
+  useGetAllProductQuery,
+  useGetAllUserQuery,
+} from "../../app/features/services/productApi";
+import { useGetCurrentUserQuery } from "../../app/features/auth/auth";
 import BlogCard from "../Card/BlogCard";
 import SkeletonCard from "../Card/Skeleton";
 
 export default function Blog({ page = 0, pageSize = 12 }) {
-  const { data, isLoading, isError } = useGetAllProductQuery({ pageNumber: page, pageSize });
+  const { data: currentUserData } = useGetCurrentUserQuery();
+  const currentUser = currentUserData?.data;
+
+  const { data, isLoading, isError } = useGetAllProductQuery({
+    pageNumber: page,
+    pageSize,
+  });
   const { data: userData } = useGetAllUserQuery();
 
   const productData = data?.data?.content;
-  const totalPages = data?.data?.totalPages || 0;
   const user = userData?.data?.content;
 
   if (isLoading || !productData) {
@@ -24,19 +33,28 @@ export default function Blog({ page = 0, pageSize = 12 }) {
     return <div>Error loading blogs</div>;
   }
 
+  // Filter blogs that belong to the current user
+  const userBlogs = productData.filter(blog => blog.authorUuid === currentUser?.uuid);
+
+  if (userBlogs.length === 0) {
+    return <div className="col-span-full py-10 text-center text-gray-500 text-lg">You haven't posted any blogs yet.</div>;
+  }
+
   return (
     <>
-      {productData.map((blog) => (
+      {userBlogs.map((blog) => (
         <BlogCard
           key={blog.id}
           image={blog.thumbnailUrl}
-          author={user?.find((u) => u.uuid === blog.authorUuid)?.fullName}
+          author={user?.find((u) => u.uuid === blog.authorUuid)?.fullName || currentUser?.fullName}
           tag={blog.blogCategory}
           title={blog.title}
           summary={blog.content}
           views={blog.view}
           time={new Date(blog.createdAt).toLocaleDateString()}
-          userImage={user?.find((u) => u.uuid === blog.authorUuid)?.profileUrl}
+          userImage={
+            user?.find((u) => u.uuid === blog.authorUuid)?.profileUrl || currentUser?.profileUrl
+          }
         />
       ))}
     </>

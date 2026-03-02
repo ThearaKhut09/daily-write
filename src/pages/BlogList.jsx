@@ -11,10 +11,22 @@ import { useGetAllProductQuery } from "../app/features/services/productApi";
 
 export default function BlogList() {
   const [page, setPage] = useState(0);
+  const [sortBy, setSortBy] = useState("createdAt,desc");
+  const [searchQuery, setSearchQuery] = useState("");
   const pageSize = 12;
 
-  const { data } = useGetAllProductQuery({ pageNumber: page, pageSize });
+  const { data } = useGetAllProductQuery({ pageNumber: page, pageSize, sortBy });
   const totalPages = data?.data?.totalPages || 0;
+
+  const handleSortChange = (e) => {
+    setSortBy(e.target.value);
+    setPage(0); // Reset to first page when sorting changes
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+    setPage(0);
+  };
 
   const getPageNumbers = () => {
     const pages = [];
@@ -87,6 +99,8 @@ export default function BlogList() {
             <input
               type="text"
               placeholder="Search"
+              value={searchQuery}
+              onChange={handleSearchChange}
               className="h-full w-full bg-transparent text-sm outline-none placeholder:text-[#797f84]"
             />
             <Search size={20} className="text-[#5e6569]" />
@@ -108,7 +122,15 @@ export default function BlogList() {
           ].map((chip, index) => (
             <button
               key={`${chip}-${index}`}
-              className="shrink-0 rounded-md border border-border-main bg-bg-main px-5 py-2 text-xs text-primary-orange hover:bg-orange-50"
+              onClick={() => {
+                setSearchQuery(chip === searchQuery ? "" : chip);
+                setPage(0);
+              }}
+              className={`shrink-0 rounded-md border border-border-main px-5 py-2 text-xs transition-colors hover:bg-orange-50 ${
+                searchQuery.toLowerCase() === chip.toLowerCase()
+                  ? "bg-primary-orange text-white"
+                  : "bg-bg-main text-primary-orange"
+              }`}
             >
               {chip}
             </button>
@@ -121,10 +143,14 @@ export default function BlogList() {
             <span className="text-lg font-medium text-primary-orange">
               Sort by:
             </span>
-            <select className="rounded-lg border border-[#a5aaae] bg-bg-main px-3 py-2 text-sm text-[#5e6569] outline-none">
-              <option>Latest</option>
-              <option>Popular</option>
-              <option>Oldest</option>
+            <select
+              value={sortBy}
+              onChange={handleSortChange}
+              className="rounded-lg border border-[#a5aaae] bg-bg-main px-3 py-2 text-sm text-[#5e6569] outline-none"
+            >
+              <option value="createdAt,desc">Latest</option>
+              <option value="view,desc">Popular</option>
+              <option value="createdAt,asc">Oldest</option>
             </select>
           </div>
         </div>
@@ -132,7 +158,7 @@ export default function BlogList() {
         <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
 
           {/* Card blog */}
-          <ListBlog page={page} pageSize={pageSize} />
+          <ListBlog page={page} pageSize={pageSize} sortBy={sortBy} searchQuery={searchQuery} />
         </div>
 
         <div className="mt-8 flex items-center justify-center gap-2 text-sm">
