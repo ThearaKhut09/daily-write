@@ -19,8 +19,9 @@ export const productApi = baseApi.injectEndpoints({
     getBlogByUuid: builder.query({
       query: (uuid) => `/blogs/${uuid}`,
     }),
-    getBlogsByUserUuid: builder.query({
-      query: (userUuid) => `/blogs/user/${userUuid}`,
+    getAllProductByCurrentUserUuid: builder.query({
+      query: ({ userUuid, pageNumber = 0, pageSize = 12 }) =>
+        `/blogs/user/${userUuid}?pageNumber=${pageNumber}&pageSize=${pageSize}`,
     }),
     getAllUser: builder.query({
       query: () => `/users`,
@@ -54,7 +55,7 @@ export const {
   useGetLatestBlogsQuery,
   useGetTrendingBlogsQuery,
   useGetBlogByUuidQuery,
-  useGetBlogsByUserUuidQuery,
+  useGetAllProductByCurrentUserUuidQuery,
   useGetCommentsByBlogQuery,
   useCreateCommentMutation,
 } = productApi;

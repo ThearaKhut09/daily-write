@@ -11,6 +11,7 @@ import Layout from "./layout.jsx";
 import { store } from "./app/store.js";
 import { Provider } from "react-redux";
 import LoginPage from "./pages/Auth.jsx";
+import Bloger from "./pages/Bloger.jsx";
 
 const router = createBrowserRouter([
   {
@@ -37,16 +38,20 @@ const router = createBrowserRouter([
         path: "/blogs/:uuid",
         element: <BlogDetail />,
       },
+      {
+        path: "/blogers/:uuid",
+        element: <Bloger/>
+      }
     ],
   },
   {
     path: "/auth",
     element: <LoginPage />,
   },
-        {
-        path: "/profile",
-        element: <Profile />,
-      },
+  {
+    path: "/profile",
+    element: <Profile />,
+  },
 ]);
 ReactDOM.createRoot(document.getElementById("root")).render(
   <Provider store={store}>

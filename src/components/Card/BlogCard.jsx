@@ -1,5 +1,6 @@
 import { Eye, MessageSquare, User } from "lucide-react";
 import parse from "html-react-parser";
+import { Link } from "react-router-dom";
 
 export default function BlogCard({
   image,
@@ -11,9 +12,15 @@ export default function BlogCard({
   comments,
   time,
   userImage,
+  uuid,
+  status
 }) {
+  const isDraft = status?.toUpperCase() === "DRAFT" || tag === "DRAFT";
+  const linkTo = isDraft ? `/blog-post?uuid=${uuid}` : `/blogs/${uuid}`;
+
   return (
-    <article className="overflow-hidden rounded-2xl border border-border-main bg-bg-main shadow-sm transition hover:shadow-md">
+    <Link to={linkTo}>
+        <article className="overflow-hidden rounded-2xl border border-border-main bg-bg-main shadow-sm transition hover:shadow-md">
       <div className="relative h-44 w-full">
         <img src={image} alt={title} className="h-full w-full object-cover" />
         <div className="absolute left-3 top-3 rounded-full bg-white px-2 py-1 text-[10px] font-semibold text-[#00b33d]">
@@ -69,5 +76,6 @@ export default function BlogCard({
         </div>
       </div>
     </article>
+    </Link>
   );
 }

@@ -84,6 +84,7 @@ export default function ListBlog({
             views={blog.view}
             time={new Date(blog.createdAt).toLocaleDateString()}
             userImage={author?.profileUrl}
+            uuid={blog.uuid}
           />
         );
       })}

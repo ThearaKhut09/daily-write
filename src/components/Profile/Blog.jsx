@@ -1,5 +1,5 @@
 import {
-  useGetAllProductQuery,
+  useGetAllProductByCurrentUserUuidQuery,
   useGetAllUserQuery,
 } from "../../app/features/services/productApi";
 import { useGetCurrentUserQuery } from "../../app/features/auth/auth";
@@ -10,19 +10,19 @@ export default function Blog({ page = 0, pageSize = 12 }) {
   const { data: currentUserData } = useGetCurrentUserQuery();
   const currentUser = currentUserData?.data;
 
-  const { data, isLoading, isError } = useGetAllProductQuery({
-    pageNumber: page,
-    pageSize: 100, // Fetch more to ensure we find user's blogs on client side
-  });
+  const { data, isLoading, isError } = useGetAllProductByCurrentUserUuidQuery(
+    { userUuid: currentUser?.uuid, pageNumber: page, pageSize },
+    { skip: !currentUser?.uuid }
+  );
   const { data: userData } = useGetAllUserQuery();
 
-  const productData = data?.data?.content;
-  const user = userData?.data?.content;
+  const productData = data?.data?.content || data?.data || data || [];
+  const user = userData?.data?.content || userData?.data || userData || [];
 
-  if (isLoading || !productData) {
+  if (isLoading || !data || !currentUser) {
     return (
       <div className="flex gap-8 p-4 max-w-2xl mx-auto">
-        {[...Array(6)].map((_, i) => (
+        {[...Array(pageSize)].map((_, i) => (
           <SkeletonCard key={i} />
         ))}
       </div>
@@ -35,7 +35,7 @@ export default function Blog({ page = 0, pageSize = 12 }) {
 
   // Filter only PUBLISHED blogs for the main blog tab that belong to current user
   const userPublishedBlogs = productData.filter(
-    (blog) => blog.authorUuid === currentUser?.uuid && blog.status === "PUBLISHED"
+    (blog) => blog.status?.toUpperCase() === "PUBLISHED"
   );
 
   if (userPublishedBlogs.length === 0) {
@@ -47,6 +47,8 @@ export default function Blog({ page = 0, pageSize = 12 }) {
       {userPublishedBlogs.map((blog) => (
         <BlogCard
           key={blog.id}
+          uuid={blog.uuid}
+          status={blog.status}
           image={blog.thumbnailUrl}
           author={user?.find((u) => u.uuid === blog.authorUuid)?.fullName || currentUser?.fullName}
           tag={blog.blogCategory}

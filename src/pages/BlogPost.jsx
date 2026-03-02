@@ -1,17 +1,28 @@
 import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, ChevronDown } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Quill from "quill";
 import "quill/dist/quill.snow.css";
+import { useGetBlogByUuidQuery } from "../app/features/services/productApi";
 
 export default function BlogPost() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const uuid = queryParams.get("uuid");
+
+  const { data: blogResult, isLoading: isFetching } = useGetBlogByUuidQuery(uuid, {
+    skip: !uuid,
+  });
+
   const editorRootRef = useRef(null);
   const quillInstanceRef = useRef(null);
 
   const [category, setCategory] = useState("");
   const [title, setTitle] = useState("");
+  const [isQuillReady, setIsQuillReady] = useState(false);
 
+  // Initialize Quill
   useEffect(() => {
     if (!editorRootRef.current || quillInstanceRef.current) return;
 
@@ -30,10 +41,55 @@ export default function BlogPost() {
       },
     });
 
+    setIsQuillReady(true);
+
     return () => {
       quillInstanceRef.current = null;
+      setIsQuillReady(false);
     };
   }, []);
+
+  // Pre-fill data when editing a draft
+  useEffect(() => {
+    if (isQuillReady && blogResult) {
+      const blog = blogResult?.data || blogResult;
+      if (blog && typeof blog === 'object' && !Array.isArray(blog)) {
+        setTitle(blog.title || "");
+        setCategory(blog.blogCategory || "");
+        
+        if (quillInstanceRef.current && blog.content) {
+          // Use a small timeout to ensure Quill is fully stable
+          setTimeout(() => {
+            if (quillInstanceRef.current) {
+              quillInstanceRef.current.clipboard.dangerouslyPasteHTML(blog.content);
+            }
+          }, 0);
+        }
+      }
+    }
+  }, [isQuillReady, blogResult]);
+
+  const handlePublish = () => {
+    const content = quillInstanceRef.current ? quillInstanceRef.current.root.innerHTML : "";
+    const postData = {
+      title,
+      blogCategory: category,
+      content,
+      // If we're editing a draft, we might want to include the uuid
+      uuid: uuid || null
+    };
+
+    console.log("Publishing Post Data:", postData);
+    alert("Check console for post data!");
+  };
+
+  if (uuid && isFetching) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-bg-main">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-orange"></div>
+      </div>
+    );
+  }
 
   return (
     <section className="bg-bg-main text-text-main pb-20">
@@ -48,10 +104,13 @@ export default function BlogPost() {
           </button>
 
           <h1 className="text-primary-orange text-2xl md:text-4xl font-bold text-center">
-            Create New Post
+            {uuid ? "Edit Draft" : "Create New Post"}
           </h1>
 
-          <button className="bg-primary-orange text-white text-lg md:text-2xl font-semibold px-6 md:px-10 py-2.5 rounded-lg hover:brightness-110 transition-all">
+          <button 
+            onClick={handlePublish}
+            className="bg-primary-orange text-white text-lg md:text-2xl font-semibold px-6 md:px-10 py-2.5 rounded-lg hover:brightness-110 transition-all"
+          >
             Publish
           </button>
         </div>
