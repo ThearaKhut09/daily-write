@@ -34,6 +34,14 @@ export const productApi = baseApi.injectEndpoints({
       ],
     }),
 
+    patchUser: builder.mutation({
+      query: ({ uuid, payload }) => ({
+        url: `/users/${uuid}`,
+        method: "PATCH",
+        body: payload,
+      }),
+      invalidatesTags: ["User"],
+    }),
 
     createComment: builder.mutation({
       query: ({ blogUuid, userUuid, content }) => ({
@@ -98,5 +106,6 @@ export const {
   usePatchUserMutation,
   useUploadMediaMutation,
   useUploadMediaMutation,
-  useCreateBlogMutation
+  useCreateBlogMutation,
+  usePatchUserMutation
 } = productApi;

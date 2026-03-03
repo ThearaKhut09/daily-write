@@ -9,7 +9,7 @@ import {
 } from "../app/features/services/productApi";
 import { buildCreateBlogPayload } from "../app/features/services/blogPayload";
 
-const FILE_PREVIEW_BASE_URL = "https://blog-api.bykh.org/api/v100/files";
+const FILE_PREVIEW_BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const getFileExtension = (fileName) => {
   const extension = fileName?.split(".")?.pop()?.toLowerCase();
