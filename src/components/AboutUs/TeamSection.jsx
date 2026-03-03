@@ -251,6 +251,7 @@ const IntroSection = () => {
                         />
                       ))}
                     </motion.div>
+                    
                   </motion.div>
 
                   {/* Card Bottom Text Placeholder */}
