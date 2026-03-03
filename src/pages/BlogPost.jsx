@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, ChevronDown, ImagePlus, Loader2 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Quill from "quill";
 import "quill/dist/quill.snow.css";
 import {
   useCreateBlogMutation,
   useUploadMediaMutation,
+  useGetBlogByUuidQuery,
 } from "../app/features/services/productApi";
 import { buildCreateBlogPayload } from "../app/features/services/blogPayload";
 
@@ -70,6 +71,7 @@ export default function BlogPost() {
   const [coverPreview, setCoverPreview] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [isQuillReady, setIsQuillReady] = useState(false);
 
   const [uploadMedia, { isLoading: isUploadingImage }] =
     useUploadMediaMutation();
@@ -188,37 +190,23 @@ export default function BlogPost() {
 
   // Pre-fill data when editing a draft
   useEffect(() => {
-    if (isQuillReady && blogResult) {
-      const blog = blogResult?.data || blogResult;
-      if (blog && typeof blog === 'object' && !Array.isArray(blog)) {
-        setTitle(blog.title || "");
-        setCategory(blog.blogCategory || "");
-        
-        if (quillInstanceRef.current && blog.content) {
-          // Use a small timeout to ensure Quill is fully stable
-          setTimeout(() => {
-            if (quillInstanceRef.current) {
-              quillInstanceRef.current.clipboard.dangerouslyPasteHTML(blog.content);
-            }
-          }, 0);
-        }
+    if (!blogResult) return;
+
+    const blog = blogResult?.data || blogResult;
+    if (blog && typeof blog === 'object' && !Array.isArray(blog)) {
+      setTitle(blog.title || "");
+      setCategory(blog.blogCategory || "");
+
+      if (quillInstanceRef.current && blog.content) {
+        // Use a small timeout to ensure Quill is fully stable
+        setTimeout(() => {
+          if (quillInstanceRef.current) {
+            quillInstanceRef.current.clipboard.dangerouslyPasteHTML(blog.content);
+          }
+        }, 0);
       }
     }
-  }, [isQuillReady, blogResult]);
-
-  const handlePublish = () => {
-    const content = quillInstanceRef.current ? quillInstanceRef.current.root.innerHTML : "";
-    const postData = {
-      title,
-      blogCategory: category,
-      content,
-      // If we're editing a draft, we might want to include the uuid
-      uuid: uuid || null
-    };
-
-    console.log("Publishing Post Data:", postData);
-    alert("Check console for post data!");
-  };
+  }, [blogResult]);
 
   if (uuid && isFetching) {
     return (

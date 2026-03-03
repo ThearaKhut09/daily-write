@@ -54,26 +54,6 @@ export const productApi = baseApi.injectEndpoints({
       ],
     }),
 
-    patchUser: builder.mutation({
-      query: ({ uuid, payload }) => ({
-        url: `/users/${uuid}`,
-        method: "PATCH",
-        body: payload,
-      }),
-      invalidatesTags: ["User"],
-    }),
-
-    uploadMedia: builder.mutation({
-      query: (file) => {
-        const formData = new FormData();
-        formData.append("file", file);
-        return {
-          url: "/medias",
-          method: "POST",
-          body: formData,
-        };
-      },
-    }),
     uploadMedia: builder.mutation({
       query: (formData) => ({
         url: "/medias",
@@ -105,7 +85,5 @@ export const {
   useCreateCommentMutation,
   usePatchUserMutation,
   useUploadMediaMutation,
-  useUploadMediaMutation,
   useCreateBlogMutation,
-  usePatchUserMutation
 } = productApi;
