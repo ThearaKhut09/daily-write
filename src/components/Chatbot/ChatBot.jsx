@@ -116,7 +116,6 @@ export default function ChatBot() {
               </div>
               <div>
                 <p className="font-bold text-sm leading-none">DailyWrite AI</p>
-                <p className="text-[10px] text-orange-100">Powered by Gemini</p>
               </div>
             </div>
             <button
