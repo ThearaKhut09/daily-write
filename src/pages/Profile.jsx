@@ -9,6 +9,8 @@ import {
   Pencil,
   Trash2,
   X,
+  Moon,
+  Sun,
 } from "lucide-react";
 import { useGetCurrentUserQuery } from "../app/features/auth/auth";
 import { getDecryptedRefreshToken, clearTokens } from "../util/tokenUtil";
@@ -29,6 +31,9 @@ const Profile = () => {
   const pageSize = 12;
   const [blogMode, setBlogMode] = useState("view");
   const [blogToDelete, setBlogToDelete] = useState(null);
+  const [isDark, setIsDark] = useState(() =>
+    document.documentElement.classList.contains("dark"),
+  );
   const [deleteBlog, { isLoading: isDeleting }] = useDeleteBlogMutation();
 
   const { data } = useGetAllProductQuery({ pageNumber: page, pageSize });
@@ -46,6 +51,16 @@ const Profile = () => {
       navigate("/auth");
     }
   }, [token, navigate]);
+
+  React.useEffect(() => {
+    if (isDark) {
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+    }
+  }, [isDark]);
 
   const handleLogout = () => {
     clearTokens();
@@ -220,12 +235,22 @@ const Profile = () => {
               {user?.email || "email@example.com"}
             </p>
           </div>
-          <button
-            onClick={handleLogout}
-            className="bg-red-600 text-white px-6 py-2 rounded-lg font-bold text-sm hover:bg-red-700 transition-colors"
-          >
-            Log Out
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setIsDark((prev) => !prev)}
+              className="flex items-center gap-2 rounded-lg border border-(--border-color) bg-(--bg-primary) px-4 py-2 text-sm font-bold text-(--text-primary) hover:bg-(--bg-secondary) transition-colors"
+              aria-label="Toggle Theme"
+            >
+              {isDark ? <Sun size={16} /> : <Moon size={16} />}
+              {isDark ? "Light" : "Dark"}
+            </button>
+            <button
+              onClick={handleLogout}
+              className="bg-red-600 text-white px-6 py-2 rounded-lg font-bold text-sm hover:bg-red-700 transition-colors"
+            >
+              Log Out
+            </button>
+          </div>
         </header>
 
         {activeTab === "blogs" && (
