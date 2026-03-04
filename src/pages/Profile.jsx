@@ -30,6 +30,7 @@ const Profile = () => {
   const [page, setPage] = useState(0);
   const pageSize = 12;
   const [blogMode, setBlogMode] = useState("view");
+  const [draftMode, setDraftMode] = useState("view");
   const [blogToDelete, setBlogToDelete] = useState(null);
   const [isDark, setIsDark] = useState(() =>
     document.documentElement.classList.contains("dark"),
@@ -73,8 +74,11 @@ const Profile = () => {
     setPage(0);
     if (tab !== "blogs") {
       setBlogMode("view");
-      setBlogToDelete(null);
     }
+    if (tab !== "draft") {
+      setDraftMode("view");
+    }
+    setBlogToDelete(null);
   };
 
   const handleConfirmDelete = async () => {
@@ -373,6 +377,23 @@ const Profile = () => {
                 <h2 className="text-4xl font-black text-(--primary-500) tracking-tight">
                   Drafts
                 </h2>
+                <div className="absolute left-0 flex items-center gap-2">
+                  <button
+                    onClick={() => setDraftMode("delete")}
+                    className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                      draftMode === "delete"
+                        ? "bg-(--primary-500) text-white"
+                        : "text-(--primary-500) border border-(--border-color)"
+                    }`}
+                  >
+                    <Trash2 size={14} /> Delete
+                  </button>
+                </div>
+                {draftMode === "delete" && (
+                  <p className="absolute left-0 top-12 text-sm font-semibold text-(--primary-500)">
+                    Click the top-right cross on a draft card to delete
+                  </p>
+                )}
                 <div className="absolute right-0 flex items-center gap-2 text-sm">
                   <span className="text-(--text-secondary)">Sort by:</span>
                   <button className="flex items-center gap-1 border border-(--border-color) rounded-lg px-3 py-1 bg-(--bg-primary) text-(--text-primary)">
@@ -383,7 +404,12 @@ const Profile = () => {
 
               <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {/* Draft blogs */}
-                <DraftBlog page={page} pageSize={pageSize} />
+                <DraftBlog
+                  page={page}
+                  pageSize={pageSize}
+                  mode={draftMode}
+                  onRequestDelete={(blog) => setBlogToDelete(blog)}
+                />
               </div>
 
               <div className="mt-8 flex items-center justify-center gap-2 text-sm">

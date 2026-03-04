@@ -6,13 +6,18 @@ import { useGetCurrentUserQuery } from "../../app/features/auth/auth";
 import BlogCard from "../Card/BlogCard";
 import SkeletonCard from "../Card/Skeleton";
 
-export default function DraftBlog({ page = 0, pageSize = 12 }) {
+export default function DraftBlog({
+  page = 0,
+  pageSize = 12,
+  mode = "view",
+  onRequestDelete,
+}) {
   const { data: currentUserData } = useGetCurrentUserQuery();
   const currentUser = currentUserData?.data;
 
   const { data, isLoading, isError } = useGetAllProductByCurrentUserUuidQuery(
     { userUuid: currentUser?.uuid, pageNumber: page, pageSize },
-    { skip: !currentUser?.uuid }
+    { skip: !currentUser?.uuid },
   );
   const { data: userData } = useGetAllUserQuery();
 
@@ -34,8 +39,7 @@ export default function DraftBlog({ page = 0, pageSize = 12 }) {
   }
 
   const userDraftBlogs = productData.filter(
-    (blog) =>
-      blog.status?.toUpperCase() === "DRAFT",
+    (blog) => blog.status?.toUpperCase() === "DRAFT",
   );
 
   if (userDraftBlogs.length === 0) {
@@ -63,6 +67,8 @@ export default function DraftBlog({ page = 0, pageSize = 12 }) {
             views={blog.view}
             time={new Date(blog.createdAt).toLocaleDateString()}
             userImage={author?.profileUrl || currentUser?.profileUrl}
+            mode={mode}
+            onDelete={() => onRequestDelete?.(blog)}
           />
         );
       })}
