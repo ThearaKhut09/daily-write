@@ -20,6 +20,7 @@ import {
 import About from "../components/Profile/About";
 import Blog from "../components/Profile/Blog";
 import DraftBlog from "../components/Profile/DraftBlog";
+import DaliyWriteLogo from "../assets/DaliyWriteLogo.svg";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -125,8 +126,12 @@ const Profile = () => {
           className="flex items-center gap-2 mb-12 cursor-pointer"
           onClick={() => navigate("/")}
         >
-          <div className="w-8 h-8 bg-(--primary-500) bg-opacity-10 rounded-lg flex items-center justify-center">
-            <span className="text-(--primary-500) text-xl">🖋️</span>
+          <div className="w-8 h-8 bg-opacity-10 rounded-lg flex items-center justify-center">
+            <img
+              src={DaliyWriteLogo}
+              alt="DailyWrite logo"
+              className="w-8 h-8 object-contain"
+            />
           </div>
           <h1 className="font-bold text-xl text-(--text-primary)">
             DailyWrite
