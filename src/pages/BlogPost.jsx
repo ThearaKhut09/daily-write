@@ -7,6 +7,7 @@ import {
   useCreateBlogMutation,
   useUploadMediaMutation,
   useGetBlogByUuidQuery,
+  useUpdateBlogMutation,
 } from "../app/features/services/productApi";
 import { buildCreateBlogPayload } from "../app/features/services/blogPayload";
 
@@ -57,9 +58,12 @@ export default function BlogPost() {
   const queryParams = new URLSearchParams(location.search);
   const uuid = queryParams.get("uuid");
 
-  const { data: blogResult, isLoading: isFetching } = useGetBlogByUuidQuery(uuid, {
-    skip: !uuid,
-  });
+  const { data: blogResult, isLoading: isFetching } = useGetBlogByUuidQuery(
+    uuid,
+    {
+      skip: !uuid,
+    },
+  );
 
   const editorRootRef = useRef(null);
   const quillInstanceRef = useRef(null);
@@ -76,6 +80,7 @@ export default function BlogPost() {
   const [uploadMedia, { isLoading: isUploadingImage }] =
     useUploadMediaMutation();
   const [createBlog, { isLoading: isCreatingBlog }] = useCreateBlogMutation();
+  const [updateBlog, { isLoading: isUpdatingBlog }] = useUpdateBlogMutation();
 
   const handleCoverImagesChange = async (event) => {
     const file = event.target.files?.[0] || null;
@@ -147,11 +152,17 @@ export default function BlogPost() {
         content,
       });
 
-      await createBlog(payload).unwrap();
+      if (uuid) {
+        await updateBlog({ uuid, payload }).unwrap();
+      } else {
+        await createBlog(payload).unwrap();
+      }
       setSuccessMessage(
-        status === "DRAFT"
-          ? "Draft saved successfully."
-          : "Post published successfully.",
+        uuid
+          ? "Post updated successfully."
+          : status === "DRAFT"
+            ? "Draft saved successfully."
+            : "Post published successfully.",
       );
       navigate("/profile");
     } catch (error) {
@@ -193,15 +204,18 @@ export default function BlogPost() {
     if (!blogResult) return;
 
     const blog = blogResult?.data || blogResult;
-    if (blog && typeof blog === 'object' && !Array.isArray(blog)) {
+    if (blog && typeof blog === "object" && !Array.isArray(blog)) {
       setTitle(blog.title || "");
       setCategory(blog.blogCategory || "");
+      setCoverPreview(blog.thumbnailUrl || "");
 
       if (quillInstanceRef.current && blog.content) {
         // Use a small timeout to ensure Quill is fully stable
         setTimeout(() => {
           if (quillInstanceRef.current) {
-            quillInstanceRef.current.clipboard.dangerouslyPasteHTML(blog.content);
+            quillInstanceRef.current.clipboard.dangerouslyPasteHTML(
+              blog.content,
+            );
           }
         }, 0);
       }
@@ -236,18 +250,18 @@ export default function BlogPost() {
             <button
               type="button"
               onClick={() => handleCreatePost("DRAFT")}
-              disabled={isUploadingImage || isCreatingBlog}
+              disabled={isUploadingImage || isCreatingBlog || isUpdatingBlog}
               className="border border-primary-orange text-primary-orange text-sm md:text-xl font-semibold px-4 md:px-7 py-2.5 rounded-lg hover:bg-primary-orange/10 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              {isCreatingBlog ? "Saving..." : "Save Draft"}
+              {isCreatingBlog || isUpdatingBlog ? "Saving..." : "Save Draft"}
             </button>
             <button
               type="button"
               onClick={() => handleCreatePost("PUBLISHED")}
-              disabled={isUploadingImage || isCreatingBlog}
+              disabled={isUploadingImage || isCreatingBlog || isUpdatingBlog}
               className="bg-primary-orange text-white text-sm md:text-2xl font-semibold px-4 md:px-10 py-2.5 rounded-lg hover:brightness-110 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              {isCreatingBlog ? "Publishing..." : "Publish"}
+              {isCreatingBlog || isUpdatingBlog ? "Publishing..." : "Publish"}
             </button>
           </div>
         </div>

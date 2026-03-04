@@ -3,18 +3,20 @@ import {
   User,
   Info,
   Bookmark,
-  LogOut,
   ChevronDown,
   ChevronLeft,
   ChevronRight,
-  Heart,
-  Bookmark as BookmarkIcon,
+  Pencil,
+  Trash2,
+  X,
 } from "lucide-react";
 import { useGetCurrentUserQuery } from "../app/features/auth/auth";
 import { getDecryptedRefreshToken, clearTokens } from "../util/tokenUtil";
 import { useNavigate } from "react-router-dom";
-import { useGetAllProductQuery } from "../app/features/services/productApi";
-import ListBlog from "../components/BlogPage/ListBlog";
+import {
+  useDeleteBlogMutation,
+  useGetAllProductQuery,
+} from "../app/features/services/productApi";
 import About from "../components/Profile/About";
 import Blog from "../components/Profile/Blog";
 import DraftBlog from "../components/Profile/DraftBlog";
@@ -24,6 +26,9 @@ const Profile = () => {
   const token = getDecryptedRefreshToken();
   const [page, setPage] = useState(0);
   const pageSize = 12;
+  const [blogMode, setBlogMode] = useState("view");
+  const [blogToDelete, setBlogToDelete] = useState(null);
+  const [deleteBlog, { isLoading: isDeleting }] = useDeleteBlogMutation();
 
   const { data } = useGetAllProductQuery({ pageNumber: page, pageSize });
   const totalPages = data?.data?.totalPages || 0;
@@ -45,6 +50,25 @@ const Profile = () => {
     clearTokens();
     navigate("/");
     window.location.reload();
+  };
+
+  const handleSwitchTab = (tab) => {
+    setActiveTab(tab);
+    setPage(0);
+    if (tab !== "blogs") {
+      setBlogMode("view");
+      setBlogToDelete(null);
+    }
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!blogToDelete?.uuid) return;
+    try {
+      await deleteBlog(blogToDelete.uuid).unwrap();
+      setBlogToDelete(null);
+    } catch (error) {
+      console.error("Delete blog failed", error);
+    }
   };
 
   if (!token) {
@@ -111,7 +135,7 @@ const Profile = () => {
 
         <nav className="space-y-2">
           <button
-            onClick={() => setActiveTab("blogs")}
+            onClick={() => handleSwitchTab("blogs")}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${
               activeTab === "blogs"
                 ? "bg-(--primary-500) text-white shadow-md"
@@ -125,8 +149,9 @@ const Profile = () => {
           >
             <User size={18} /> Profile
           </button>
+
           <button
-            onClick={() => setActiveTab("about")}
+            onClick={() => handleSwitchTab("about")}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${
               activeTab === "about"
                 ? "bg-(--primary-500) text-white shadow-md"
@@ -141,7 +166,7 @@ const Profile = () => {
             <Info size={18} /> About
           </button>
           <button
-            onClick={() => setActiveTab("draft")}
+            onClick={() => handleSwitchTab("draft")}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${
               activeTab === "draft"
                 ? "bg-(--primary-500) text-white shadow-md"
@@ -205,6 +230,38 @@ const Profile = () => {
                 <h2 className="text-4xl font-black text-(--primary-500) tracking-tight">
                   Blogs
                 </h2>
+                <div className="absolute left-0 flex items-center gap-2">
+                  <button
+                    onClick={() => setBlogMode("update")}
+                    className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                      blogMode === "update"
+                        ? "bg-(--primary-500) text-white"
+                        : "text-(--primary-500) border border-(--border-color)"
+                    }`}
+                  >
+                    <Pencil size={14} /> Update
+                  </button>
+                  <button
+                    onClick={() => setBlogMode("delete")}
+                    className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                      blogMode === "delete"
+                        ? "bg-(--primary-500) text-white"
+                        : "text-(--primary-500) border border-(--border-color)"
+                    }`}
+                  >
+                    <Trash2 size={14} /> Delete
+                  </button>
+                </div>
+                {blogMode === "update" && (
+                  <p className="absolute left-0 top-12 text-sm font-semibold text-(--text-secondary)">
+                    Select one blog to update
+                  </p>
+                )}
+                {blogMode === "delete" && (
+                  <p className="absolute left-0 top-12 text-sm font-semibold text-(--primary-500)">
+                    Click the top-right cross on a card to delete
+                  </p>
+                )}
                 <div className="absolute right-0 flex items-center gap-2 text-sm">
                   <span className="text-(--text-secondary)">Sort by:</span>
                   <button className="flex items-center gap-1 border border-(--border-color) rounded-lg px-3 py-1 bg-(--bg-primary) text-(--text-primary)">
@@ -215,7 +272,12 @@ const Profile = () => {
 
               <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {/* Card blog */}
-                <Blog page={page} pageSize={pageSize} />
+                <Blog
+                  page={page}
+                  pageSize={pageSize}
+                  mode={blogMode}
+                  onRequestDelete={(blog) => setBlogToDelete(blog)}
+                />
               </div>
 
               <div className="mt-8 flex items-center justify-center gap-2 text-sm">
@@ -333,6 +395,47 @@ const Profile = () => {
           </>
         )}
       </main>
+
+      {blogToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+          <div className="w-full max-w-md rounded-xl bg-(--bg-primary) p-6 shadow-xl border border-(--border-color)">
+            <div className="flex items-start justify-between">
+              <h3 className="text-lg font-bold text-(--text-primary)">
+                Confirm delete
+              </h3>
+              <button
+                type="button"
+                onClick={() => setBlogToDelete(null)}
+                className="rounded-full p-1 text-(--text-secondary) hover:bg-(--bg-secondary)"
+                aria-label="Close"
+              >
+                <X size={18} />
+              </button>
+            </div>
+            <p className="mt-3 text-sm text-(--text-secondary)">
+              Are you sure you want to delete this post?
+            </p>
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setBlogToDelete(null)}
+                disabled={isDeleting}
+                className="rounded-lg border border-(--border-color) px-4 py-2 text-sm font-semibold text-(--text-secondary) hover:bg-(--bg-secondary)"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmDelete}
+                disabled={isDeleting}
+                className="rounded-lg bg-(--primary-500) px-4 py-2 text-sm font-semibold text-white hover:brightness-110 disabled:opacity-60"
+              >
+                {isDeleting ? "Deleting..." : "Delete"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

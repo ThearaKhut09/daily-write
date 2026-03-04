@@ -5,14 +5,21 @@ import {
 import { useGetCurrentUserQuery } from "../../app/features/auth/auth";
 import BlogCard from "../Card/BlogCard";
 import SkeletonCard from "../Card/Skeleton";
+import { useNavigate } from "react-router-dom";
 
-export default function Blog({ page = 0, pageSize = 12 }) {
+export default function Blog({
+  page = 0,
+  pageSize = 12,
+  mode = "view",
+  onRequestDelete,
+}) {
+  const navigate = useNavigate();
   const { data: currentUserData } = useGetCurrentUserQuery();
   const currentUser = currentUserData?.data;
 
   const { data, isLoading, isError } = useGetAllProductByCurrentUserUuidQuery(
     { userUuid: currentUser?.uuid, pageNumber: page, pageSize },
-    { skip: !currentUser?.uuid }
+    { skip: !currentUser?.uuid },
   );
   const { data: userData } = useGetAllUserQuery();
 
@@ -35,11 +42,15 @@ export default function Blog({ page = 0, pageSize = 12 }) {
 
   // Filter only PUBLISHED blogs for the main blog tab that belong to current user
   const userPublishedBlogs = productData.filter(
-    (blog) => blog.status?.toUpperCase() === "PUBLISHED"
+    (blog) => blog.status?.toUpperCase() === "PUBLISHED",
   );
 
   if (userPublishedBlogs.length === 0) {
-    return <div className="col-span-full py-10 text-center text-gray-500 text-lg">You haven't published any blogs yet.</div>;
+    return (
+      <div className="col-span-full py-10 text-center text-gray-500 text-lg">
+        You haven't published any blogs yet.
+      </div>
+    );
   }
 
   return (
@@ -50,15 +61,26 @@ export default function Blog({ page = 0, pageSize = 12 }) {
           uuid={blog.uuid}
           status={blog.status}
           image={blog.thumbnailUrl}
-          author={user?.find((u) => u.uuid === blog.authorUuid)?.fullName || currentUser?.fullName}
+          author={
+            user?.find((u) => u.uuid === blog.authorUuid)?.fullName ||
+            currentUser?.fullName
+          }
           tag={blog.blogCategory}
           title={blog.title}
           summary={blog.content}
           views={blog.view}
           time={new Date(blog.createdAt).toLocaleDateString()}
           userImage={
-            user?.find((u) => u.uuid === blog.authorUuid)?.profileUrl || currentUser?.profileUrl
+            user?.find((u) => u.uuid === blog.authorUuid)?.profileUrl ||
+            currentUser?.profileUrl
           }
+          mode={mode}
+          onCardClick={() => {
+            if (mode === "update") {
+              navigate(`/blog-post?uuid=${blog.uuid}`);
+            }
+          }}
+          onDelete={() => onRequestDelete?.(blog)}
         />
       ))}
     </>
