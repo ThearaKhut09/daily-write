@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ArrowLeft, Loader2, ChevronDown } from "lucide-react";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useUserLoginMutation } from "../app/features/auth/auth";
 import {
   storeAccessToken,
@@ -53,8 +53,7 @@ const Divider = ({ text }) => (
 /* ---------------------- Validation Schemas ---------------------- */
 const loginSchema = z.object({
   email: z.string().email("Please enter a valid email"),
-  password: z
-    .string(),
+  password: z.string(),
 });
 
 const registerSchema = z
@@ -79,6 +78,9 @@ const registerSchema = z
 const LoginPage = () => {
   const [view, setView] = useState("login");
   const [error, setError] = useState("");
+  const [showLoginPassword, setShowLoginPassword] = useState(false);
+  const [showRegisterPassword, setShowRegisterPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
 
   const [
@@ -148,7 +150,7 @@ const LoginPage = () => {
     setError("");
     try {
       console.log("Register payload:", {
-        fullName: data.firstName + " " +data.lastName,
+        fullName: data.firstName + " " + data.lastName,
         email: data.email,
         password: data.password,
       });
@@ -288,18 +290,35 @@ const LoginPage = () => {
                   >
                     Password
                   </label>
-                  <input
-                    type="password"
-                    {...loginRegister("password")}
-                    placeholder="Password"
-                    className={`${getInputClassName()} input-field`}
-                    style={{
-                      backgroundColor: "var(--bg-primary)",
-                      color: "var(--text-primary)",
-                    }}
-                    onFocus={handleInputFocus}
-                    onBlur={handleInputBlur}
-                  />
+                  <div className="relative">
+                    <input
+                      type={showLoginPassword ? "text" : "password"}
+                      {...loginRegister("password")}
+                      placeholder="Password"
+                      className={`${getInputClassName()} input-field pr-10`}
+                      style={{
+                        backgroundColor: "var(--bg-primary)",
+                        color: "var(--text-primary)",
+                      }}
+                      onFocus={handleInputFocus}
+                      onBlur={handleInputBlur}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowLoginPassword((prev) => !prev)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2"
+                      style={{ color: "var(--text-secondary)" }}
+                      aria-label={
+                        showLoginPassword ? "Hide password" : "Show password"
+                      }
+                    >
+                      {showLoginPassword ? (
+                        <EyeOff className="h-4 w-4" />
+                      ) : (
+                        <Eye className="h-4 w-4" />
+                      )}
+                    </button>
+                  </div>
                   {loginErrors.password && (
                     <p className="text-xs mt-1 text-red-600">
                       {loginErrors.password.message}
@@ -443,18 +462,35 @@ const LoginPage = () => {
                   >
                     Password
                   </label>
-                  <input
-                    type="password"
-                    placeholder="Password"
-                    {...regRegister("password")}
-                    className={`${getInputClassName()} input-field`}
-                    style={{
-                      backgroundColor: "var(--bg-primary)",
-                      color: "var(--text-primary)",
-                    }}
-                    onFocus={handleInputFocus}
-                    onBlur={handleInputBlur}
-                  />
+                  <div className="relative">
+                    <input
+                      type={showRegisterPassword ? "text" : "password"}
+                      placeholder="Password"
+                      {...regRegister("password")}
+                      className={`${getInputClassName()} input-field pr-10`}
+                      style={{
+                        backgroundColor: "var(--bg-primary)",
+                        color: "var(--text-primary)",
+                      }}
+                      onFocus={handleInputFocus}
+                      onBlur={handleInputBlur}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowRegisterPassword((prev) => !prev)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2"
+                      style={{ color: "var(--text-secondary)" }}
+                      aria-label={
+                        showRegisterPassword ? "Hide password" : "Show password"
+                      }
+                    >
+                      {showRegisterPassword ? (
+                        <EyeOff className="h-4 w-4" />
+                      ) : (
+                        <Eye className="h-4 w-4" />
+                      )}
+                    </button>
+                  </div>
                   {regErrors.password && (
                     <p className="text-xs mt-1 text-red-600">
                       {regErrors.password.message}
@@ -469,18 +505,35 @@ const LoginPage = () => {
                   >
                     Confirm Password
                   </label>
-                  <input
-                    type="password"
-                    placeholder="Confirm Password"
-                    {...regRegister("confirmPassword")}
-                    className={`${getInputClassName()} input-field`}
-                    style={{
-                      backgroundColor: "var(--bg-primary)",
-                      color: "var(--text-primary)",
-                    }}
-                    onFocus={handleInputFocus}
-                    onBlur={handleInputBlur}
-                  />
+                  <div className="relative">
+                    <input
+                      type={showConfirmPassword ? "text" : "password"}
+                      placeholder="Confirm Password"
+                      {...regRegister("confirmPassword")}
+                      className={`${getInputClassName()} input-field pr-10`}
+                      style={{
+                        backgroundColor: "var(--bg-primary)",
+                        color: "var(--text-primary)",
+                      }}
+                      onFocus={handleInputFocus}
+                      onBlur={handleInputBlur}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPassword((prev) => !prev)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2"
+                      style={{ color: "var(--text-secondary)" }}
+                      aria-label={
+                        showConfirmPassword ? "Hide password" : "Show password"
+                      }
+                    >
+                      {showConfirmPassword ? (
+                        <EyeOff className="h-4 w-4" />
+                      ) : (
+                        <Eye className="h-4 w-4" />
+                      )}
+                    </button>
+                  </div>
                   {regErrors.confirmPassword && (
                     <p className="text-xs mt-1 text-red-600">
                       {regErrors.confirmPassword.message}
