@@ -75,7 +75,6 @@ export default function BlogPost() {
   const [coverPreview, setCoverPreview] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  const [isQuillReady, setIsQuillReady] = useState(false);
 
   const [uploadMedia, { isLoading: isUploadingImage }] =
     useUploadMediaMutation();
@@ -191,11 +190,8 @@ export default function BlogPost() {
       },
     });
 
-    setIsQuillReady(true);
-
     return () => {
       quillInstanceRef.current = null;
-      setIsQuillReady(false);
     };
   }, []);
 
