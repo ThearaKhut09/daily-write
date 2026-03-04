@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from "react";
-import { GoogleGenAI } from "@google/genai";
 import { MessageCircle, X, Send, Loader2, Bot, User } from "lucide-react";
 
-const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
+const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
+const GROQ_MODEL = "llama-3.3-70b-versatile";
 
 const SYSTEM_PROMPT = `You are DailyWrite AI, a friendly writing assistant on the DailyWrite blog platform.
 Help users with:
@@ -46,20 +46,46 @@ export default function ChatBot() {
     setIsLoading(true);
 
     try {
+      const apiKey = import.meta.env.VITE_GROQ_API_KEY;
+      if (!apiKey) {
+        throw new Error(
+          "Missing API key. Add `VITE_GROQ_API_KEY` to your `.env` file.",
+        );
+      }
+
       const history = messages.map((m) => ({
-        role: m.role,
-        parts: [{ text: m.text }],
+        role: m.role === "model" ? "assistant" : "user",
+        content: m.text,
       }));
 
-      const chat = ai.chats.create({
-        model: "gemini-2.0-flash",
-        history,
-        config: { systemInstruction: SYSTEM_PROMPT },
+      const response = await fetch(GROQ_API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          model: GROQ_MODEL,
+          messages: [
+            { role: "system", content: SYSTEM_PROMPT },
+            ...history,
+            { role: "user", content: text },
+          ],
+          temperature: 0.7,
+        }),
       });
 
-      const response = await chat.sendMessage({ message: text });
+      const data = await response.json();
+      if (!response.ok) {
+        throw {
+          status: response.status,
+          message: data?.error?.message || "Request failed",
+        };
+      }
+
       const responseText =
-        response.text || "Sorry, I could not generate a response.";
+        data?.choices?.[0]?.message?.content ||
+        "Sorry, I could not generate a response.";
 
       setMessages((prev) => [...prev, { role: "model", text: responseText }]);
     } catch (err) {
@@ -68,7 +94,7 @@ export default function ChatBot() {
         status === 429
           ? " **Rate limit reached.** The free tier quota is exhausted. Please wait and try again."
           : status === 401
-            ? " **Invalid API key.** Check your `VITE_GEMINI_API_KEY` in `.env`."
+            ? " **Invalid API key.** Check your `VITE_GROQ_API_KEY` in `.env`."
             : " **Something went wrong.** " +
               (err?.message ?? "Please try again.");
       setMessages((prev) => [...prev, { role: "model", text: errorText }]);
