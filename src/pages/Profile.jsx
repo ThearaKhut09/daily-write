@@ -29,6 +29,8 @@ const Profile = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [blogMode, setBlogMode] = useState("view");
   const [draftMode, setDraftMode] = useState("view");
+  const [blogSortBy, setBlogSortBy] = useState("latest");
+  const [draftSortBy, setDraftSortBy] = useState("latest");
   const [blogToDelete, setBlogToDelete] = useState(null);
   const [isDark, setIsDark] = useState(() =>
     document.documentElement.classList.contains("dark"),
@@ -269,7 +271,11 @@ const Profile = () => {
                 </h2>
                 <div className="absolute left-0 flex items-center gap-2">
                   <button
-                    onClick={() => setBlogMode("update")}
+                    onClick={() =>
+                      setBlogMode((prev) =>
+                        prev === "update" ? "view" : "update",
+                      )
+                    }
                     className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                       blogMode === "update"
                         ? "bg-(--primary-500) text-white"
@@ -279,7 +285,11 @@ const Profile = () => {
                     <Pencil size={14} /> Update
                   </button>
                   <button
-                    onClick={() => setBlogMode("delete")}
+                    onClick={() =>
+                      setBlogMode((prev) =>
+                        prev === "delete" ? "view" : "delete",
+                      )
+                    }
                     className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                       blogMode === "delete"
                         ? "bg-(--primary-500) text-white"
@@ -301,9 +311,23 @@ const Profile = () => {
                 )}
                 <div className="absolute right-0 flex items-center gap-2 text-sm">
                   <span className="text-(--text-secondary)">Sort by:</span>
-                  <button className="flex items-center gap-1 border border-(--border-color) rounded-lg px-3 py-1 bg-(--bg-primary) text-(--text-primary)">
-                    Latest <ChevronDown size={14} />
-                  </button>
+                  <div className="relative">
+                    <select
+                      value={blogSortBy}
+                      onChange={(event) => {
+                        setBlogSortBy(event.target.value);
+                        setPage(0);
+                      }}
+                      className="appearance-none border border-(--border-color) rounded-lg pl-3 pr-8 py-1 bg-(--bg-primary) text-(--text-primary)"
+                    >
+                      <option value="latest">Latest</option>
+                      <option value="oldest">Oldest</option>
+                    </select>
+                    <ChevronDown
+                      size={14}
+                      className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-(--text-secondary)"
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -313,6 +337,7 @@ const Profile = () => {
                   page={page}
                   pageSize={pageSize}
                   mode={blogMode}
+                  sortBy={blogSortBy}
                   onTotalPagesChange={setTotalPages}
                   onRequestDelete={(blog) => setBlogToDelete(blog)}
                 />
@@ -383,7 +408,11 @@ const Profile = () => {
                 </h2>
                 <div className="absolute left-0 flex items-center gap-2">
                   <button
-                    onClick={() => setDraftMode("delete")}
+                    onClick={() =>
+                      setDraftMode((prev) =>
+                        prev === "delete" ? "view" : "delete",
+                      )
+                    }
                     className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                       draftMode === "delete"
                         ? "bg-(--primary-500) text-white"
@@ -400,9 +429,23 @@ const Profile = () => {
                 )}
                 <div className="absolute right-0 flex items-center gap-2 text-sm">
                   <span className="text-(--text-secondary)">Sort by:</span>
-                  <button className="flex items-center gap-1 border border-(--border-color) rounded-lg px-3 py-1 bg-(--bg-primary) text-(--text-primary)">
-                    Latest <ChevronDown size={14} />
-                  </button>
+                  <div className="relative">
+                    <select
+                      value={draftSortBy}
+                      onChange={(event) => {
+                        setDraftSortBy(event.target.value);
+                        setPage(0);
+                      }}
+                      className="appearance-none border border-(--border-color) rounded-lg pl-3 pr-8 py-1 bg-(--bg-primary) text-(--text-primary)"
+                    >
+                      <option value="latest">Latest</option>
+                      <option value="oldest">Oldest</option>
+                    </select>
+                    <ChevronDown
+                      size={14}
+                      className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-(--text-secondary)"
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -412,6 +455,7 @@ const Profile = () => {
                   page={page}
                   pageSize={pageSize}
                   mode={draftMode}
+                  sortBy={draftSortBy}
                   onTotalPagesChange={setTotalPages}
                   onRequestDelete={(blog) => setBlogToDelete(blog)}
                 />

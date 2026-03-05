@@ -11,6 +11,7 @@ export default function DraftBlog({
   page = 0,
   pageSize = 12,
   mode = "view",
+  sortBy = "latest",
   onTotalPagesChange,
   onRequestDelete,
 }) {
@@ -29,8 +30,20 @@ export default function DraftBlog({
   const userDraftBlogs = productData.filter(
     (blog) => blog.status?.toUpperCase() === "DRAFT",
   );
-  const totalPages = Math.ceil(userDraftBlogs.length / pageSize);
-  const paginatedBlogs = userDraftBlogs.slice(
+
+  const sortedDraftBlogs = [...userDraftBlogs].sort((a, b) => {
+    const dateA = new Date(a?.createdAt || 0).getTime();
+    const dateB = new Date(b?.createdAt || 0).getTime();
+
+    if (sortBy === "oldest") {
+      return dateA - dateB;
+    }
+
+    return dateB - dateA;
+  });
+
+  const totalPages = Math.ceil(sortedDraftBlogs.length / pageSize);
+  const paginatedBlogs = sortedDraftBlogs.slice(
     page * pageSize,
     page * pageSize + pageSize,
   );
@@ -53,7 +66,7 @@ export default function DraftBlog({
     );
   }
 
-  if (userDraftBlogs.length === 0) {
+  if (sortedDraftBlogs.length === 0) {
     return (
       <div className="col-span-full py-10 text-center text-gray-500 text-lg">
         No draft blogs found.

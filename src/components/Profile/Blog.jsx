@@ -12,6 +12,7 @@ export default function Blog({
   page = 0,
   pageSize = 12,
   mode = "view",
+  sortBy = "latest",
   onTotalPagesChange,
   onRequestDelete,
 }) {
@@ -31,8 +32,20 @@ export default function Blog({
   const userPublishedBlogs = productData.filter(
     (blog) => blog.status?.toUpperCase() === "PUBLISHED",
   );
-  const totalPages = Math.ceil(userPublishedBlogs.length / pageSize);
-  const paginatedBlogs = userPublishedBlogs.slice(
+
+  const sortedPublishedBlogs = [...userPublishedBlogs].sort((a, b) => {
+    const dateA = new Date(a?.createdAt || 0).getTime();
+    const dateB = new Date(b?.createdAt || 0).getTime();
+
+    if (sortBy === "oldest") {
+      return dateA - dateB;
+    }
+
+    return dateB - dateA;
+  });
+
+  const totalPages = Math.ceil(sortedPublishedBlogs.length / pageSize);
+  const paginatedBlogs = sortedPublishedBlogs.slice(
     page * pageSize,
     page * pageSize + pageSize,
   );
@@ -55,7 +68,7 @@ export default function Blog({
     return <div>Error loading blogs</div>;
   }
 
-  if (userPublishedBlogs.length === 0) {
+  if (sortedPublishedBlogs.length === 0) {
     return (
       <div className="col-span-full py-10 text-center text-gray-500 text-lg">
         You haven't published any blogs yet.
