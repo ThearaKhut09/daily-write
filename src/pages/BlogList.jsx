@@ -11,6 +11,15 @@ export default function BlogList() {
   const { t } = useI18n();
   const pageSize = 12;
 
+  const mainCategories = [
+    { label: "Front-End", value: "front-end" },
+    { label: "Back-End", value: "back-end" },
+    { label: "Cyber Security", value: "cyber-security" },
+    { label: "UXUI Design", value: "ux-ui-design" },
+    { label: "Mobile App", value: "mobile-app" },
+    { label: "Art History", value: "art-history" },
+  ];
+
   const { data } = useGetAllProductQuery({
     pageNumber: page,
     pageSize,
@@ -107,29 +116,37 @@ export default function BlogList() {
 
       <div className="mx-auto max-w-7xl px-4 py-6">
         <div className="flex gap-3 overflow-x-auto pb-1">
-          {[
-            "moon",
-            "Front-End",
-            "Art-History",
-            "Front-End",
-            "Front-End",
-            "Cyber Security",
-            "Cyber Security",
-            "Mobile App",
-          ].map((chip, index) => (
+          <button
+            key="all"
+            onClick={() => {
+              setSearchQuery("");
+              setPage(0);
+            }}
+            className={`shrink-0 rounded-md border border-border-main px-5 py-2 text-xs transition-colors hover:bg-orange-50 ${
+              !searchQuery
+                ? "bg-primary-orange text-white"
+                : "bg-bg-main text-primary-orange"
+            }`}
+          >
+            All
+          </button>
+
+          {mainCategories.map((category) => (
             <button
-              key={`${chip}-${index}`}
+              key={category.value}
               onClick={() => {
-                setSearchQuery(chip === searchQuery ? "" : chip);
+                setSearchQuery(
+                  category.value === searchQuery ? "" : category.value,
+                );
                 setPage(0);
               }}
               className={`shrink-0 rounded-md border border-border-main px-5 py-2 text-xs transition-colors hover:bg-orange-50 ${
-                searchQuery.toLowerCase() === chip.toLowerCase()
+                searchQuery.toLowerCase() === category.value.toLowerCase()
                   ? "bg-primary-orange text-white"
                   : "bg-bg-main text-primary-orange"
               }`}
             >
-              {chip}
+              {category.label}
             </button>
           ))}
         </div>
