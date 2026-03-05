@@ -380,6 +380,8 @@ export default function BlogPost() {
                   <option value="back-end">Back-End</option>
                   <option value="cyber-security">Cyber Security</option>
                   <option value="ux-ui-design">UXUI Design</option>
+                  <option value="mobile-app">Mobile App</option>
+                  <option value="art-history">Art History</option>
                 </select>
                 <ChevronDown
                   className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-text-sub"
