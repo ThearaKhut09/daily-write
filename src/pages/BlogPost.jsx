@@ -244,7 +244,7 @@ export default function BlogPost() {
             <span className="text-xl md:text-2xl">{t("blogPost.back")}</span>
           </button>
 
-          <h1 className="text-primary-orange text-2xl md:text-4xl font-bold text-center">
+          <h1 className="text-primary-orange text-xl md:text-2xl font-bold text-center">
             {uuid ? t("blogPost.editDraft") : t("blogPost.createNew")}
           </h1>
 
@@ -253,7 +253,7 @@ export default function BlogPost() {
               type="button"
               onClick={() => handleCreatePost("DRAFT")}
               disabled={isUploadingImage || isCreatingBlog || isUpdatingBlog}
-              className="border border-primary-orange text-primary-orange text-sm md:text-xl font-semibold px-4 md:px-7 py-2.5 rounded-lg hover:bg-primary-orange/10 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+              className="border border-primary-orange text-primary-orange text-sm md:text-l font-semibold px-4 md:px-7 py-2.5 rounded-lg hover:bg-primary-orange/10 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {isCreatingBlog || isUpdatingBlog
                 ? t("blogPost.saving")
@@ -263,7 +263,7 @@ export default function BlogPost() {
               type="button"
               onClick={() => handleCreatePost("PUBLISHED")}
               disabled={isUploadingImage || isCreatingBlog || isUpdatingBlog}
-              className="bg-primary-orange text-white text-sm md:text-2xl font-semibold px-4 md:px-10 py-2.5 rounded-lg hover:brightness-110 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+              className="bg-primary-orange text-white text-sm md:text-l font-semibold px-4 md:px-10 py-2.5 rounded-lg hover:brightness-110 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {isCreatingBlog || isUpdatingBlog
                 ? t("blogPost.publishing")
