@@ -3,6 +3,7 @@ import {
   useGetAllUserQuery,
 } from "../../app/features/services/productApi";
 import { useGetCurrentUserQuery } from "../../app/features/auth/auth";
+import { useEffect } from "react";
 import BlogCard from "../Card/BlogCard";
 import SkeletonCard from "../Card/Skeleton";
 import { useNavigate } from "react-router-dom";
@@ -11,6 +12,7 @@ export default function Blog({
   page = 0,
   pageSize = 12,
   mode = "view",
+  onTotalPagesChange,
   onRequestDelete,
 }) {
   const navigate = useNavigate();
@@ -18,13 +20,26 @@ export default function Blog({
   const currentUser = currentUserData?.data;
 
   const { data, isLoading, isError } = useGetAllProductByCurrentUserUuidQuery(
-    { userUuid: currentUser?.uuid, pageNumber: page, pageSize },
+    { userUuid: currentUser?.uuid, pageNumber: 0, pageSize: 1000 },
     { skip: !currentUser?.uuid },
   );
   const { data: userData } = useGetAllUserQuery();
 
   const productData = data?.data?.content || data?.data || data || [];
   const user = userData?.data?.content || userData?.data || userData || [];
+
+  const userPublishedBlogs = productData.filter(
+    (blog) => blog.status?.toUpperCase() === "PUBLISHED",
+  );
+  const totalPages = Math.ceil(userPublishedBlogs.length / pageSize);
+  const paginatedBlogs = userPublishedBlogs.slice(
+    page * pageSize,
+    page * pageSize + pageSize,
+  );
+
+  useEffect(() => {
+    onTotalPagesChange?.(totalPages);
+  }, [onTotalPagesChange, totalPages]);
 
   if (isLoading || !data || !currentUser) {
     return (
@@ -40,11 +55,6 @@ export default function Blog({
     return <div>Error loading blogs</div>;
   }
 
-  // Filter only PUBLISHED blogs for the main blog tab that belong to current user
-  const userPublishedBlogs = productData.filter(
-    (blog) => blog.status?.toUpperCase() === "PUBLISHED",
-  );
-
   if (userPublishedBlogs.length === 0) {
     return (
       <div className="col-span-full py-10 text-center text-gray-500 text-lg">
@@ -55,7 +65,7 @@ export default function Blog({
 
   return (
     <>
-      {userPublishedBlogs.map((blog) => (
+      {paginatedBlogs.map((blog) => (
         <BlogCard
           key={blog.id}
           uuid={blog.uuid}

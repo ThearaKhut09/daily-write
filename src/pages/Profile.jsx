@@ -15,10 +15,7 @@ import {
 import { useGetCurrentUserQuery } from "../app/features/auth/auth";
 import { getDecryptedRefreshToken, clearTokens } from "../util/tokenUtil";
 import { useNavigate } from "react-router-dom";
-import {
-  useDeleteBlogMutation,
-  useGetAllProductQuery,
-} from "../app/features/services/productApi";
+import { useDeleteBlogMutation } from "../app/features/services/productApi";
 import About from "../components/Profile/About";
 import Blog from "../components/Profile/Blog";
 import DraftBlog from "../components/Profile/DraftBlog";
@@ -29,6 +26,7 @@ const Profile = () => {
   const token = getDecryptedRefreshToken();
   const [page, setPage] = useState(0);
   const pageSize = 12;
+  const [totalPages, setTotalPages] = useState(0);
   const [blogMode, setBlogMode] = useState("view");
   const [draftMode, setDraftMode] = useState("view");
   const [blogToDelete, setBlogToDelete] = useState(null);
@@ -37,8 +35,6 @@ const Profile = () => {
   );
   const [deleteBlog, { isLoading: isDeleting }] = useDeleteBlogMutation();
 
-  const { data } = useGetAllProductQuery({ pageNumber: page, pageSize });
-  const totalPages = data?.data?.totalPages || 0;
   const [activeTab, setActiveTab] = useState("blogs");
 
   const { data: userData, isLoading } = useGetCurrentUserQuery(undefined, {
@@ -62,6 +58,13 @@ const Profile = () => {
       localStorage.setItem("theme", "light");
     }
   }, [isDark]);
+
+  React.useEffect(() => {
+    const lastValidPage = Math.max(0, totalPages - 1);
+    if (page > lastValidPage) {
+      setPage(lastValidPage);
+    }
+  }, [page, totalPages]);
 
   const handleLogout = () => {
     clearTokens();
@@ -310,6 +313,7 @@ const Profile = () => {
                   page={page}
                   pageSize={pageSize}
                   mode={blogMode}
+                  onTotalPagesChange={setTotalPages}
                   onRequestDelete={(blog) => setBlogToDelete(blog)}
                 />
               </div>
@@ -408,6 +412,7 @@ const Profile = () => {
                   page={page}
                   pageSize={pageSize}
                   mode={draftMode}
+                  onTotalPagesChange={setTotalPages}
                   onRequestDelete={(blog) => setBlogToDelete(blog)}
                 />
               </div>
