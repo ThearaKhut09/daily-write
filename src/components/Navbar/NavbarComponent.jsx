@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Moon, Sun, SquarePen, Menu, X, LogOut, User } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import logo from "../../assets/DaliyWriteLogo.svg";
 import { useGetCurrentUserQuery } from "../../app/features/auth/auth";
 import { clearTokens, getDecryptedRefreshToken } from "../../util/tokenUtil";
@@ -12,6 +12,8 @@ export default function NavbarComponent() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  const profileMenuRef = useRef(null);
 
   const token = getDecryptedRefreshToken();
   const { data: userData, isLoading } = useGetCurrentUserQuery(undefined, {
@@ -29,6 +31,26 @@ export default function NavbarComponent() {
       localStorage.setItem("theme", "light");
     }
   }, [isDark]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        showProfileMenu &&
+        profileMenuRef.current &&
+        !profileMenuRef.current.contains(event.target)
+      ) {
+        setShowProfileMenu(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [showProfileMenu]);
+
+  useEffect(() => {
+    setShowProfileMenu(false);
+    setMenuOpen(false);
+  }, [location.pathname]);
 
   const handleLogout = () => {
     clearTokens();
@@ -61,7 +83,10 @@ export default function NavbarComponent() {
         </nav>
 
         <div className="flex items-center gap-2 md:gap-4">
-          <Link to="/blog-post" className="flex items-center gap-2 text-primary-orange font-bold hover:opacity-80">
+          <Link
+            to="/blog-post"
+            className="flex items-center gap-2 text-primary-orange font-bold hover:opacity-80"
+          >
             <button className="flex items-center gap-2 text-primary-orange font-bold hover:opacity-80">
               <SquarePen size={24} />
               <span className="text-md hidden lg:inline">Write</span>
@@ -81,14 +106,18 @@ export default function NavbarComponent() {
           {isLoading && token ? (
             <div className="w-10 h-10 rounded-full border-2 border-orange-100 animate-pulse bg-orange-50" />
           ) : user ? (
-            <div className="relative">
+            <div className="relative" ref={profileMenuRef}>
               <button
                 onClick={() => setShowProfileMenu(!showProfileMenu)}
                 className="flex items-center gap-2 focus:outline-none"
               >
                 <div className="w-10 h-10 rounded-full border-2 border-primary-orange overflow-hidden bg-orange-50 flex items-center justify-center">
                   {user.profileUrl ? (
-                    <img src={user.profileUrl} alt={user.fullName} className="w-full h-full object-cover" />
+                    <img
+                      src={user.profileUrl}
+                      alt={user.fullName}
+                      className="w-full h-full object-cover"
+                    />
                   ) : (
                     <User className="text-primary-orange" size={20} />
                   )}
