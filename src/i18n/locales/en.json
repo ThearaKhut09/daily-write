@@ -41,7 +41,12 @@
         "q2": "How can we post the blogs?",
         "q3": "Is it free to create an account?",
         "q4": "What topics can I write about?",
-        "q5": "How do I create an account?"
+        "q5": "How do I create an account?",
+        "a1": "DailyWrite is a community blogging platform where people can share ideas, experiences, and insights across different topics.",
+        "a2": "Create an account, click the Write button, add your title and content, then publish your blog post.",
+        "a3": "Yes. Creating an account and publishing on DailyWrite is free.",
+        "a4": "You can write about technology, daily life, education, personal growth, and other helpful general topics.",
+        "a5": "Click Register, fill in your basic information, then submit the form to create your account."
     },
     "feedback": {
         "title": "Share Your Feedback",

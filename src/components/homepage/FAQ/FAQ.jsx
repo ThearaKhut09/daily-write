@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import image from "../../../assets/homepage/Man thinking-pana.svg";
 import { useI18n } from "../../../i18n/useI18n";
 
@@ -6,7 +6,16 @@ export default function FAQ() {
   const headerRef = useRef(null);
   const imageRef = useRef(null);
   const faqItemsRef = useRef([]);
+  const [openIndex, setOpenIndex] = useState(null);
   const { t } = useI18n();
+
+  const faqItems = [
+    { question: t("faq.q1"), answer: t("faq.a1") },
+    { question: t("faq.q2"), answer: t("faq.a2") },
+    { question: t("faq.q3"), answer: t("faq.a3") },
+    { question: t("faq.q4"), answer: t("faq.a4") },
+    { question: t("faq.q5"), answer: t("faq.a5") },
+  ];
 
   useEffect(() => {
     const observerOptions = {
@@ -107,70 +116,52 @@ export default function FAQ() {
 
         {/* FAQ Buttons Section */}
         <div className="space-y-3 sm:space-y-4 order-2 lg:order-2">
-          {/* FAQ Item 1 */}
-          <button
-            ref={(el) => (faqItemsRef.current[0] = el)}
-            className="w-full flex items-center justify-between p-4 sm:p-5 md:p-6 bg-bg-main border border-border-main rounded-xl sm:rounded-2xl shadow-sm hover:border-primary-orange transition-all group opacity-0"
-          >
-            <span className="text-base sm:text-lg font-bold text-text-main text-left pr-4">
-              {t("faq.q1")}
-            </span>
-            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-primary-orange/10 flex items-center justify-center text-primary-orange font-bold group-hover:bg-primary-orange group-hover:text-white transition-colors shrink-0">
-              +
-            </div>
-          </button>
+          {faqItems.map((item, index) => {
+            const isOpen = openIndex === index;
 
-          {/* FAQ Item 2 */}
-          <button
-            ref={(el) => (faqItemsRef.current[1] = el)}
-            className="w-full flex items-center justify-between p-4 sm:p-5 md:p-6 bg-bg-main border border-border-main rounded-xl sm:rounded-2xl shadow-sm hover:border-primary-orange transition-all group opacity-0"
-          >
-            <span className="text-base sm:text-lg font-bold text-text-main text-left pr-4">
-              {t("faq.q2")}
-            </span>
-            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-primary-orange/10 flex items-center justify-center text-primary-orange font-bold group-hover:bg-primary-orange group-hover:text-white transition-colors shrink-0">
-              +
-            </div>
-          </button>
+            return (
+              <div
+                key={`faq-${index}`}
+                ref={(el) => (faqItemsRef.current[index] = el)}
+                className="bg-bg-main border border-border-main rounded-xl sm:rounded-2xl shadow-sm transition-all opacity-0"
+              >
+                <button
+                  type="button"
+                  onClick={() => setOpenIndex(isOpen ? null : index)}
+                  className={`w-full flex items-center justify-between p-4 sm:p-5 md:p-6 text-left transition-all group ${
+                    isOpen
+                      ? "border-primary-orange"
+                      : "hover:border-primary-orange"
+                  }`}
+                >
+                  <span className="text-base sm:text-lg font-bold text-text-main pr-4">
+                    {item.question}
+                  </span>
+                  <div
+                    className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center font-bold transition-colors shrink-0 ${
+                      isOpen
+                        ? "bg-primary-orange text-white"
+                        : "bg-primary-orange/10 text-primary-orange group-hover:bg-primary-orange group-hover:text-white"
+                    }`}
+                  >
+                    {isOpen ? "−" : "+"}
+                  </div>
+                </button>
 
-          {/* FAQ Item 3 */}
-          <button
-            ref={(el) => (faqItemsRef.current[2] = el)}
-            className="w-full flex items-center justify-between p-4 sm:p-5 md:p-6 bg-bg-main border border-border-main rounded-xl sm:rounded-2xl shadow-sm hover:border-primary-orange transition-all group opacity-0"
-          >
-            <span className="text-base sm:text-lg font-bold text-text-main text-left pr-4">
-              {t("faq.q3")}
-            </span>
-            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-primary-orange/10 flex items-center justify-center text-primary-orange font-bold group-hover:bg-primary-orange group-hover:text-white transition-colors shrink-0">
-              +
-            </div>
-          </button>
-
-          {/* FAQ Item 4 */}
-          <button
-            ref={(el) => (faqItemsRef.current[3] = el)}
-            className="w-full flex items-center justify-between p-4 sm:p-5 md:p-6 bg-bg-main border border-border-main rounded-xl sm:rounded-2xl shadow-sm hover:border-primary-orange transition-all group opacity-0"
-          >
-            <span className="text-base sm:text-lg font-bold text-text-main text-left pr-4">
-              {t("faq.q4")}
-            </span>
-            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-primary-orange/10 flex items-center justify-center text-primary-orange font-bold group-hover:bg-primary-orange group-hover:text-white transition-colors shrink-0">
-              +
-            </div>
-          </button>
-
-          {/* FAQ Item 5 */}
-          <button
-            ref={(el) => (faqItemsRef.current[4] = el)}
-            className="w-full flex items-center justify-between p-4 sm:p-5 md:p-6 bg-bg-main border border-border-main rounded-xl sm:rounded-2xl shadow-sm hover:border-primary-orange transition-all group opacity-0"
-          >
-            <span className="text-base sm:text-lg font-bold text-text-main text-left pr-4">
-              {t("faq.q5")}
-            </span>
-            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-primary-orange/10 flex items-center justify-center text-primary-orange font-bold group-hover:bg-primary-orange group-hover:text-white transition-colors shrink-0">
-              +
-            </div>
-          </button>
+                <div
+                  className={`px-4 sm:px-5 md:px-6 overflow-hidden transition-all duration-300 ${
+                    isOpen
+                      ? "max-h-48 pb-5 sm:pb-6 opacity-100"
+                      : "max-h-0 pb-0 opacity-0"
+                  }`}
+                >
+                  <p className="text-sm sm:text-base text-text-sub leading-relaxed pr-2">
+                    {item.answer}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>
