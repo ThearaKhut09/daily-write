@@ -5,7 +5,8 @@ import { useI18n } from "../../../i18n/useI18n";
 export default function Information() {
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef(null);
-  const { t } = useI18n();
+  const { t, language } = useI18n();
+  const isKhmer = language === "km";
 
   // Intersection Observer for scroll in/out animations
   useEffect(() => {
@@ -39,7 +40,13 @@ export default function Information() {
       className="max-w-2xl text-center lg:text-left order-2 lg:order-1"
     >
       {/* Main heading with letter animation */}
-      <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-extrabold text-text-main leading-tight">
+      <h1
+        className={`text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-extrabold text-text-main ${
+          isKhmer
+            ? "leading-[1.55] sm:leading-[1.6] lg:leading-[1.65]"
+            : "leading-tight"
+        }`}
+      >
         <span
           className={`inline-block transition-all duration-700 ease-out transform ${
             isVisible
@@ -55,13 +62,15 @@ export default function Information() {
         <span
           className={`inline-block transition-all duration-700 ease-out transform ${
             isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-          }`}
+          } ${isKhmer ? "tracking-[0.01em]" : ""}`}
           style={{ transitionDelay: "200ms" }}
         >
           {t("hero.titleLine1")}
         </span>
         <span
-          className={`text-primary-orange block mt-1 sm:mt-2 text-2xl sm:text-3xl lg:text-4xl xl:text-5xl transition-all duration-700 ease-out transform ${
+          className={`text-primary-orange block text-2xl sm:text-3xl lg:text-4xl xl:text-5xl transition-all duration-700 ease-out transform ${
+            isKhmer ? "mt-3 sm:mt-4 leading-[1.45]" : "mt-1 sm:mt-2"
+          } ${
             isVisible
               ? "opacity-100 translate-x-0 scale-100"
               : "opacity-0 -translate-x-10 scale-90"
@@ -74,7 +83,9 @@ export default function Information() {
 
       {/* Description paragraph */}
       <p
-        className={`mt-4 sm:mt-6 text-sm sm:text-base md:text-lg text-text-sub leading-relaxed max-w-xl mx-auto lg:mx-0 transition-all duration-700 ease-out transform ${
+        className={`mt-4 sm:mt-6 text-sm sm:text-base md:text-lg text-text-sub max-w-xl mx-auto lg:mx-0 transition-all duration-700 ease-out transform ${
+          isKhmer ? "leading-[1.9]" : "leading-relaxed"
+        } ${
           isVisible
             ? "opacity-100 translate-y-0 scale-100"
             : "opacity-0 translate-y-10 scale-95"

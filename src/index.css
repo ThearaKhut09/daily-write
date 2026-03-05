@@ -4,10 +4,8 @@
 @import "@fontsource/poppins/500.css";
 @import "@fontsource/poppins/600.css";
 @import "@fontsource/poppins/700.css";
-@import "@fontsource/kantumruy/400.css";
-@import "@fontsource/kantumruy/500.css";
-@import "@fontsource/kantumruy/600.css";
-@import "@fontsource/kantumruy/700.css";
+@import "@fontsource/kantumruy/khmer-400.css";
+@import "@fontsource/kantumruy/khmer-700.css";
 @source "../.flowbite-react/class-list.json";
 
 @theme {
@@ -67,6 +65,18 @@ body {
 
 html[data-lang="km"] body {
   font-family: var(--font-khmer);
+  line-height: 1.8;
+  letter-spacing: 0.01em;
+  word-spacing: 0.04em;
+}
+
+html[data-lang="km"] h1,
+html[data-lang="km"] h2,
+html[data-lang="km"] h3,
+html[data-lang="km"] h4,
+html[data-lang="km"] h5,
+html[data-lang="km"] h6 {
+  line-height: 1.45;
 }
 
 @media (max-width: 400px) {
