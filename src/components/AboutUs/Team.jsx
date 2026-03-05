@@ -1,4 +1,5 @@
 import React from "react";
+import { useI18n } from "../../i18n/useI18n";
 
 // Reusable social icons component - moved outside to avoid recreation during render
 const SocialIcons = ({ variant = "default" }) => (
@@ -166,17 +167,19 @@ const SectionHeader = ({ title }) => (
 );
 
 const PeopleSection = () => {
+  const { t } = useI18n();
+
   // Define all team members data
   const mentors = [
     {
       name: "Kim Chansokpheng",
-      role: "Instructor",
+      role: t("about.people.instructor"),
       image: "https://via.placeholder.com/150",
       borderColor: "border-gray-100",
     },
     {
       name: "Chan Chhaya",
-      role: "Instructor",
+      role: t("about.people.instructor"),
       image: "https://via.placeholder.com/150",
       borderColor: "border-gray-100",
     },
@@ -185,19 +188,19 @@ const PeopleSection = () => {
   const teamMembers = [
     {
       name: "Saren Ratanak",
-      role: "Front-End",
+      role: t("about.people.frontEnd"),
       image: "https://via.placeholder.com/150",
       borderColor: "border-blue-500",
     },
     {
       name: "Ny Rosa",
-      role: "Front-End",
+      role: t("about.people.frontEnd"),
       image: "https://via.placeholder.com/150",
       borderColor: "border-blue-500",
     },
     {
       name: "Khut Theara",
-      role: "Front-End",
+      role: t("about.people.frontEnd"),
       image: "https://via.placeholder.com/150",
       borderColor: "border-transparent",
     },
@@ -206,22 +209,22 @@ const PeopleSection = () => {
   const additionalMembers = [
     {
       name: "Thoun Chamroeun",
-      role: "Front-End",
+      role: t("about.people.frontEnd"),
       image: "https://via.placeholder.com/150",
     },
     {
       name: "Thoun Chamroeun",
-      role: "Front-End",
+      role: t("about.people.frontEnd"),
       image: "https://via.placeholder.com/150",
     },
     {
       name: "Thoun Chamroeun",
-      role: "Front-End",
+      role: t("about.people.frontEnd"),
       image: "https://via.placeholder.com/150",
     },
     {
       name: "Thoun Chamroeun",
-      role: "Front-End",
+      role: t("about.people.frontEnd"),
       image: "https://via.placeholder.com/150",
     },
   ];
@@ -233,7 +236,7 @@ const PeopleSection = () => {
     >
       {/* Mentors Section */}
       <section className="max-w-4xl mx-auto">
-        <SectionHeader title="Our Mentors" />
+        <SectionHeader title={t("about.people.mentors")} />
         <div className="grid md:grid-cols-2 gap-8 justify-items-center">
           {mentors.map((mentor, index) => (
             <MentorCard key={`mentor-${index}`} mentor={mentor} />
@@ -244,7 +247,7 @@ const PeopleSection = () => {
       {/* Team Section */}
       <section className="py-16 px-4">
         <div className="max-w-6xl mx-auto">
-          <SectionHeader title="Our Team" />
+          <SectionHeader title={t("about.people.team")} />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
             {teamMembers.map((member, index) => (
               <TeamCard key={`team-${index}`} member={member} />

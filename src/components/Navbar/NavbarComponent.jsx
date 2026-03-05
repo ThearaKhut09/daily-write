@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { Moon, Sun, SquarePen, Menu, X, LogOut, User } from "lucide-react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../../assets/DaliyWriteLogo.svg";
 import { useGetCurrentUserQuery } from "../../app/features/auth/auth";
 import { clearTokens, getDecryptedRefreshToken } from "../../util/tokenUtil";
+import { useI18n } from "../../i18n/useI18n";
 
 export default function NavbarComponent() {
   const [isDark, setIsDark] = useState(() =>
@@ -11,8 +12,8 @@ export default function NavbarComponent() {
   );
   const [menuOpen, setMenuOpen] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const { t, toggleLanguage } = useI18n();
   const navigate = useNavigate();
-  const location = useLocation();
   const profileMenuRef = useRef(null);
 
   const token = getDecryptedRefreshToken();
@@ -47,20 +48,15 @@ export default function NavbarComponent() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [showProfileMenu]);
 
-  useEffect(() => {
-    setShowProfileMenu(false);
-    setMenuOpen(false);
-  }, [location.pathname]);
-
   const handleLogout = () => {
     clearTokens();
     window.location.reload(); // Refresh to clear state
   };
 
   const navItems = [
-    { path: "/", name: "HOME" },
-    { path: "/blogs", name: "BLOGS" },
-    { path: "/about", name: "ABOUT" },
+    { path: "/", name: t("navbar.home") },
+    { path: "/blogs", name: t("navbar.blogs") },
+    { path: "/about", name: t("navbar.about") },
   ];
 
   return (
@@ -89,11 +85,21 @@ export default function NavbarComponent() {
           >
             <button className="flex items-center gap-2 text-primary-orange font-bold hover:opacity-80">
               <SquarePen size={24} />
-              <span className="text-md hidden lg:inline">Write</span>
+              <span className="text-md hidden lg:inline">
+                {t("navbar.write")}
+              </span>
             </button>
           </Link>
 
           <div className="h-6 w-px bg-border-main mx-1 hidden md:block" />
+
+          <button
+            onClick={toggleLanguage}
+            className="px-3 py-2 rounded-lg border border-border-main text-primary-orange font-bold text-xs md:text-sm hover:bg-primary-orange hover:text-white transition-colors"
+            aria-label="Toggle Language"
+          >
+            {t("navbar.language")}
+          </button>
 
           <button
             onClick={() => setIsDark(!isDark)}
@@ -132,14 +138,14 @@ export default function NavbarComponent() {
                     className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-orange-50 dark:hover:bg-slate-800 transition-colors"
                   >
                     <User size={16} />
-                    Profile
+                    {t("navbar.profile")}
                   </Link>
                   <button
                     onClick={handleLogout}
                     className="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
                   >
                     <LogOut size={16} />
-                    Logout
+                    {t("navbar.logout")}
                   </button>
                 </div>
               )}
@@ -149,7 +155,7 @@ export default function NavbarComponent() {
               onClick={() => navigate("/auth")}
               className="hidden md:block bg-primary-orange px-6 py-2 rounded-lg text-white text-sm font-bold uppercase hover:brightness-110 transition-all"
             >
-              Login
+              {t("navbar.login")}
             </button>
           )}
 
@@ -177,6 +183,12 @@ export default function NavbarComponent() {
           <hr className="border-border-main" />
           {token && user ? (
             <div className="space-y-4">
+              <button
+                onClick={toggleLanguage}
+                className="w-full border border-border-main py-3 rounded-lg text-primary-orange font-bold"
+              >
+                {t("navbar.language")}
+              </button>
               <Link
                 to="/profile"
                 onClick={() => setMenuOpen(false)}
@@ -189,19 +201,27 @@ export default function NavbarComponent() {
                 onClick={handleLogout}
                 className="w-full bg-red-600 py-3 rounded-lg text-white font-bold uppercase"
               >
-                Logout
+                {t("navbar.logout")}
               </button>
             </div>
           ) : (
-            <button
-              onClick={() => {
-                navigate("/auth");
-                setMenuOpen(false);
-              }}
-              className="w-full bg-primary-orange py-3 rounded-lg text-white font-bold uppercase"
-            >
-              Login
-            </button>
+            <div className="space-y-4">
+              <button
+                onClick={toggleLanguage}
+                className="w-full border border-border-main py-3 rounded-lg text-primary-orange font-bold"
+              >
+                {t("navbar.language")}
+              </button>
+              <button
+                onClick={() => {
+                  navigate("/auth");
+                  setMenuOpen(false);
+                }}
+                className="w-full bg-primary-orange py-3 rounded-lg text-white font-bold uppercase"
+              >
+                {t("navbar.login")}
+              </button>
+            </div>
           )}
         </div>
       )}

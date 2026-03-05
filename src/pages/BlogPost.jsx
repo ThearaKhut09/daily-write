@@ -10,6 +10,7 @@ import {
   useUpdateBlogMutation,
 } from "../app/features/services/productApi";
 import { buildCreateBlogPayload } from "../app/features/services/blogPayload";
+import { useI18n } from "../i18n/useI18n";
 
 const FILE_PREVIEW_BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -53,6 +54,7 @@ const resolveMediaPreviewUrl = (response, originalFileName) => {
 };
 
 export default function BlogPost() {
+  const { t } = useI18n();
   const navigate = useNavigate();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -134,12 +136,12 @@ export default function BlogPost() {
     const plainContent = content.replace(/<[^>]*>/g, "").trim();
 
     if (!coverPreview) {
-      setErrorMessage("Please upload cover image first.");
+      setErrorMessage(t("blogPost.uploadCoverFirst"));
       return;
     }
 
     if (!plainTitle || !plainCategory || !plainContent) {
-      setErrorMessage("Please fill image, category, title, and content.");
+      setErrorMessage(t("blogPost.fillAllFields"));
       return;
     }
 
@@ -159,15 +161,17 @@ export default function BlogPost() {
       }
       setSuccessMessage(
         uuid
-          ? "Post updated successfully."
+          ? t("blogPost.updated")
           : status === "DRAFT"
-            ? "Draft saved successfully."
-            : "Post published successfully.",
+            ? t("blogPost.draftSaved")
+            : t("blogPost.published"),
       );
       navigate("/profile");
     } catch (error) {
       setErrorMessage(
-        error?.data?.message || error?.data?.error || "Failed to create post.",
+        error?.data?.message ||
+          error?.data?.error ||
+          t("blogPost.createFailed"),
       );
     }
   };
@@ -183,7 +187,7 @@ export default function BlogPost() {
 
     quillInstanceRef.current = new Quill(editorRootRef.current, {
       theme: "snow",
-      placeholder: "Write your post content...",
+      placeholder: t("blogPost.editorPlaceholder"),
       modules: {
         toolbar: [
           ["bold", "italic", "underline", "strike"],
@@ -201,7 +205,7 @@ export default function BlogPost() {
       quillInstanceRef.current = null;
       setIsEditorReady(false);
     };
-  }, [uuid, isFetching]);
+  }, [uuid, isFetching, t]);
 
   // Pre-fill data when editing a draft
   useEffect(() => {
@@ -237,11 +241,11 @@ export default function BlogPost() {
             className="flex items-center gap-2 text-[22px] font-semibold text-text-main hover:text-primary-orange transition-colors"
           >
             <ArrowLeft size={24} />
-            <span className="text-xl md:text-2xl">Back</span>
+            <span className="text-xl md:text-2xl">{t("blogPost.back")}</span>
           </button>
 
           <h1 className="text-primary-orange text-2xl md:text-4xl font-bold text-center">
-            {uuid ? "Edit Draft" : "Create New Post"}
+            {uuid ? t("blogPost.editDraft") : t("blogPost.createNew")}
           </h1>
 
           <div className="flex items-center gap-2 md:gap-3">
@@ -251,7 +255,9 @@ export default function BlogPost() {
               disabled={isUploadingImage || isCreatingBlog || isUpdatingBlog}
               className="border border-primary-orange text-primary-orange text-sm md:text-xl font-semibold px-4 md:px-7 py-2.5 rounded-lg hover:bg-primary-orange/10 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              {isCreatingBlog || isUpdatingBlog ? "Saving..." : "Save Draft"}
+              {isCreatingBlog || isUpdatingBlog
+                ? t("blogPost.saving")
+                : t("blogPost.saveDraft")}
             </button>
             <button
               type="button"
@@ -259,19 +265,22 @@ export default function BlogPost() {
               disabled={isUploadingImage || isCreatingBlog || isUpdatingBlog}
               className="bg-primary-orange text-white text-sm md:text-2xl font-semibold px-4 md:px-10 py-2.5 rounded-lg hover:brightness-110 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              {isCreatingBlog || isUpdatingBlog ? "Publishing..." : "Publish"}
+              {isCreatingBlog || isUpdatingBlog
+                ? t("blogPost.publishing")
+                : t("blogPost.publish")}
             </button>
           </div>
         </div>
 
         <div className="rounded-lg border border-border-main px-4 md:px-6 py-6 md:py-8">
           <h2 className="text-primary-orange text-2xl md:text-4xl font-semibold mb-6">
-            Post Details
+            {t("blogPost.postDetails")}
           </h2>
 
           <div className="mb-6">
             <label className="block text-lg md:text-2xl font-semibold mb-2">
-              Add Image Cover <span className="text-primary-orange">*</span>
+              {t("blogPost.addImageCover")}{" "}
+              <span className="text-primary-orange">*</span>
             </label>
 
             <input
@@ -297,7 +306,7 @@ export default function BlogPost() {
               ) : isUploadingImage ? (
                 <div className="flex items-center gap-3 text-primary-orange text-lg md:text-2xl font-semibold">
                   <Loader2 className="animate-spin" size={24} />
-                  <span>Uploading image...</span>
+                  <span>{t("blogPost.uploadingImage")}</span>
                 </div>
               ) : (
                 <>
@@ -306,17 +315,17 @@ export default function BlogPost() {
                   </div>
 
                   <p className="text-primary-orange text-2xl md:text-4xl font-semibold mb-2">
-                    Upload images to gallery
+                    {t("blogPost.uploadToGallery")}
                   </p>
                   <p className="text-text-sub text-base md:text-2xl mb-2">
-                    Drag and drop images here or click to browse
+                    {t("blogPost.dragDrop")}
                   </p>
                   <p className="text-text-sub text-sm md:text-lg mb-6">
-                    PNG, JPG, GIF up to 5MB (1 file only)
+                    {t("blogPost.fileHint")}
                   </p>
 
                   <span className="bg-primary-orange text-white text-base md:text-xl font-semibold px-6 py-2 rounded-xl hover:brightness-110 transition-all">
-                    Select images
+                    {t("blogPost.selectImages")}
                   </span>
                 </>
               )}
@@ -330,14 +339,14 @@ export default function BlogPost() {
                   disabled={isUploadingImage}
                   className="border border-primary-orange text-primary-orange text-sm md:text-base font-semibold px-4 py-2 rounded-lg hover:bg-primary-orange/10 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
                 >
-                  Change image
+                  {t("blogPost.changeImage")}
                 </button>
                 <button
                   type="button"
                   onClick={handleRemoveCoverImage}
                   className="border border-border-main text-text-sub text-sm md:text-base font-semibold px-4 py-2 rounded-lg hover:border-primary-orange/40 hover:text-text-main transition-all"
                 >
-                  Remove image
+                  {t("blogPost.removeImage")}
                 </button>
               </div>
             )}
@@ -357,7 +366,8 @@ export default function BlogPost() {
           <div className="space-y-6">
             <div>
               <label className="block text-lg md:text-2xl font-semibold mb-2">
-                Category <span className="text-primary-orange">*</span>
+                {t("blogPost.category")}{" "}
+                <span className="text-primary-orange">*</span>
               </label>
               <div className="relative">
                 <select
@@ -365,7 +375,7 @@ export default function BlogPost() {
                   onChange={(event) => setCategory(event.target.value)}
                   className="w-full appearance-none bg-bg-side border border-border-main rounded-lg h-12 px-4 text-primary-orange text-base md:text-xl focus:outline-none focus:ring-2 focus:ring-primary-orange"
                 >
-                  <option value="">Select category</option>
+                  <option value="">{t("blogPost.selectCategory")}</option>
                   <option value="front-end">Front-End</option>
                   <option value="back-end">Back-End</option>
                   <option value="cyber-security">Cyber Security</option>
@@ -380,19 +390,21 @@ export default function BlogPost() {
 
             <div>
               <label className="block text-lg md:text-2xl font-semibold mb-2">
-                Title <span className="text-primary-orange">*</span>
+                {t("blogPost.title")}{" "}
+                <span className="text-primary-orange">*</span>
               </label>
               <input
                 value={title}
                 onChange={(event) => setTitle(event.target.value)}
-                placeholder="Enter your title here..."
+                placeholder={t("blogPost.titlePlaceholder")}
                 className="w-full bg-bg-side border border-border-main rounded-lg h-12 px-4 text-base md:text-xl placeholder:text-primary-orange/70 focus:outline-none focus:ring-2 focus:ring-primary-orange"
               />
             </div>
 
             <div>
               <label className="block text-lg md:text-2xl font-semibold mb-2">
-                Content <span className="text-primary-orange">*</span>
+                {t("blogPost.content")}{" "}
+                <span className="text-primary-orange">*</span>
               </label>
               <div className="blog-post-editor rounded-lg border border-border-main overflow-hidden bg-bg-main">
                 <div

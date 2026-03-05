@@ -20,8 +20,10 @@ import About from "../components/Profile/About";
 import Blog from "../components/Profile/Blog";
 import DraftBlog from "../components/Profile/DraftBlog";
 import DaliyWriteLogo from "../assets/DaliyWriteLogo.svg";
+import { useI18n } from "../i18n/useI18n";
 
 const Profile = () => {
+  const { t } = useI18n();
   const navigate = useNavigate();
   const token = getDecryptedRefreshToken();
   const [page, setPage] = useState(0);
@@ -176,7 +178,7 @@ const Profile = () => {
                 : {}
             }
           >
-            <User size={18} /> Profile
+            <User size={18} /> {t("profile.profile")}
           </button>
 
           <button
@@ -192,7 +194,7 @@ const Profile = () => {
                 : {}
             }
           >
-            <Info size={18} /> About
+            <Info size={18} /> {t("profile.about")}
           </button>
           <button
             onClick={() => handleSwitchTab("draft")}
@@ -207,7 +209,7 @@ const Profile = () => {
                 : {}
             }
           >
-            <Bookmark size={18} /> Draft
+            <Bookmark size={18} /> {t("profile.draft")}
           </button>
         </nav>
       </aside>
@@ -238,10 +240,10 @@ const Profile = () => {
               </div>
             </div>
             <h2 className="mt-4 text-2xl font-bold text-(--text-primary)">
-              {user?.fullName || "User"}
+              {user?.fullName || t("profile.user")}
             </h2>
             <p className="text-(--text-secondary) text-sm">
-              {user?.email || "email@example.com"}
+              {user?.email || t("profile.emailFallback")}
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -251,13 +253,13 @@ const Profile = () => {
               aria-label="Toggle Theme"
             >
               {isDark ? <Sun size={16} /> : <Moon size={16} />}
-              {isDark ? "Light" : "Dark"}
+              {isDark ? t("profile.light") : t("profile.dark")}
             </button>
             <button
               onClick={handleLogout}
               className="bg-red-600 text-white px-6 py-2 rounded-lg font-bold text-sm hover:bg-red-700 transition-colors"
             >
-              Log Out
+              {t("profile.logOut")}
             </button>
           </div>
         </header>
@@ -267,7 +269,7 @@ const Profile = () => {
             <section className="max-w-6xl mx-auto">
               <div className="flex justify-center items-center my-8  relative">
                 <h2 className="text-4xl font-black text-(--primary-500) tracking-tight">
-                  Blogs
+                  {t("profile.blogs")}
                 </h2>
                 <div className="absolute left-0 flex items-center gap-2">
                   <button
@@ -282,7 +284,7 @@ const Profile = () => {
                         : "text-(--primary-500) border border-(--border-color)"
                     }`}
                   >
-                    <Pencil size={14} /> Update
+                    <Pencil size={14} /> {t("profile.update")}
                   </button>
                   <button
                     onClick={() =>
@@ -296,21 +298,23 @@ const Profile = () => {
                         : "text-(--primary-500) border border-(--border-color)"
                     }`}
                   >
-                    <Trash2 size={14} /> Delete
+                    <Trash2 size={14} /> {t("profile.delete")}
                   </button>
                 </div>
                 {blogMode === "update" && (
                   <p className="absolute left-0 top-12 text-sm font-semibold text-(--text-secondary)">
-                    Select one blog to update
+                    {t("profile.selectBlogUpdate")}
                   </p>
                 )}
                 {blogMode === "delete" && (
                   <p className="absolute left-0 top-12 text-sm font-semibold text-(--primary-500)">
-                    Click the top-right cross on a card to delete
+                    {t("profile.selectBlogDelete")}
                   </p>
                 )}
                 <div className="absolute right-0 flex items-center gap-2 text-sm">
-                  <span className="text-(--text-secondary)">Sort by:</span>
+                  <span className="text-(--text-secondary)">
+                    {t("profile.sortBy")}
+                  </span>
                   <div className="relative">
                     <select
                       value={blogSortBy}
@@ -320,8 +324,8 @@ const Profile = () => {
                       }}
                       className="appearance-none border border-(--border-color) rounded-lg pl-3 pr-8 py-1 bg-(--bg-primary) text-(--text-primary)"
                     >
-                      <option value="latest">Latest</option>
-                      <option value="oldest">Oldest</option>
+                      <option value="latest">{t("profile.latest")}</option>
+                      <option value="oldest">{t("profile.oldest")}</option>
                     </select>
                     <ChevronDown
                       size={14}
@@ -404,7 +408,7 @@ const Profile = () => {
             <section className="max-w-6xl mx-auto">
               <div className="flex justify-center items-center my-8  relative">
                 <h2 className="text-4xl font-black text-(--primary-500) tracking-tight">
-                  Drafts
+                  {t("profile.drafts")}
                 </h2>
                 <div className="absolute left-0 flex items-center gap-2">
                   <button
@@ -419,16 +423,18 @@ const Profile = () => {
                         : "text-(--primary-500) border border-(--border-color)"
                     }`}
                   >
-                    <Trash2 size={14} /> Delete
+                    <Trash2 size={14} /> {t("profile.delete")}
                   </button>
                 </div>
                 {draftMode === "delete" && (
                   <p className="absolute left-0 top-12 text-sm font-semibold text-(--primary-500)">
-                    Click the top-right cross on a draft card to delete
+                    {t("profile.selectDraftDelete")}
                   </p>
                 )}
                 <div className="absolute right-0 flex items-center gap-2 text-sm">
-                  <span className="text-(--text-secondary)">Sort by:</span>
+                  <span className="text-(--text-secondary)">
+                    {t("profile.sortBy")}
+                  </span>
                   <div className="relative">
                     <select
                       value={draftSortBy}
@@ -438,8 +444,8 @@ const Profile = () => {
                       }}
                       className="appearance-none border border-(--border-color) rounded-lg pl-3 pr-8 py-1 bg-(--bg-primary) text-(--text-primary)"
                     >
-                      <option value="latest">Latest</option>
-                      <option value="oldest">Oldest</option>
+                      <option value="latest">{t("profile.latest")}</option>
+                      <option value="oldest">{t("profile.oldest")}</option>
                     </select>
                     <ChevronDown
                       size={14}
@@ -506,7 +512,7 @@ const Profile = () => {
           <div className="w-full max-w-md rounded-xl bg-(--bg-primary) p-6 shadow-xl border border-(--border-color)">
             <div className="flex items-start justify-between">
               <h3 className="text-lg font-bold text-(--text-primary)">
-                Confirm delete
+                {t("profile.confirmDelete")}
               </h3>
               <button
                 type="button"
@@ -518,7 +524,7 @@ const Profile = () => {
               </button>
             </div>
             <p className="mt-3 text-sm text-(--text-secondary)">
-              Are you sure you want to delete this post?
+              {t("profile.deleteConfirmText")}
             </p>
             <div className="mt-6 flex justify-end gap-3">
               <button
@@ -527,7 +533,7 @@ const Profile = () => {
                 disabled={isDeleting}
                 className="rounded-lg border border-(--border-color) px-4 py-2 text-sm font-semibold text-(--text-secondary) hover:bg-(--bg-secondary)"
               >
-                Cancel
+                {t("profile.cancel")}
               </button>
               <button
                 type="button"
@@ -535,7 +541,7 @@ const Profile = () => {
                 disabled={isDeleting}
                 className="rounded-lg bg-(--primary-500) px-4 py-2 text-sm font-semibold text-white hover:brightness-110 disabled:opacity-60"
               >
-                {isDeleting ? "Deleting..." : "Delete"}
+                {isDeleting ? t("profile.deleting") : t("profile.delete")}
               </button>
             </div>
           </div>
