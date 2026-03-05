@@ -6,7 +6,8 @@ import {
   storeRefreshToken,
   getDecryptedAccessToken,
 } from "../util/tokenUtil";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import { signInWithPopup } from "firebase/auth";
 import logo from "../assets/DaliyWriteLogo.svg";
 import logIn from "../assets/Auth/login.svg";
 import signUp from "../assets/Auth/sign-up-animate.svg";
@@ -16,6 +17,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import GoogleButton from "../components/Button/Google";
 import DecorativeBlobs from "../components/DecorativeBlobs";
 import BackToHome from "../components/Button/BackHome";
+import { firebaseAuth, googleProvider } from "../app/firebase";
 
 // Reusable error message - moved outside component
 const ErrorMessage = ({ error }) =>
@@ -81,7 +83,9 @@ const LoginPage = () => {
   const [showLoginPassword, setShowLoginPassword] = useState(false);
   const [showRegisterPassword, setShowRegisterPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [
     loginUser,
@@ -122,12 +126,39 @@ const LoginPage = () => {
       }
       const realAccessToken = getDecryptedAccessToken();
       console.log("Real Access Token: ", realAccessToken);
+      setIsGoogleLoading(false);
       navigate("/");
     }
   }, [userResponse, navigate]);
 
   useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+
+    const accessToken =
+      searchParams.get("accessToken") || searchParams.get("token");
+    const refreshToken = searchParams.get("refreshToken");
+    const oauthError = searchParams.get("error") || searchParams.get("message");
+
+    if (accessToken) {
+      storeAccessToken(accessToken);
+      if (refreshToken) {
+        storeRefreshToken(refreshToken);
+      }
+      setIsGoogleLoading(false);
+      navigate("/", { replace: true });
+      return;
+    }
+
+    if (oauthError) {
+      setError(decodeURIComponent(oauthError));
+      setIsGoogleLoading(false);
+      navigate("/auth", { replace: true });
+    }
+  }, [location.search, navigate]);
+
+  useEffect(() => {
     if (isError) {
+      setIsGoogleLoading(false);
       setError(
         loginError?.data?.message ||
           "Login failed. Please check your credentials.",
@@ -138,6 +169,7 @@ const LoginPage = () => {
   /* ---------------------- Submit Handlers ---------------------- */
   const onLogin = async (data) => {
     setError("");
+    setIsGoogleLoading(false);
     try {
       await loginUser({ email: data.email, password: data.password }).unwrap();
     } catch (err) {
@@ -148,6 +180,7 @@ const LoginPage = () => {
 
   const onRegister = async (data) => {
     setError("");
+    setIsGoogleLoading(false);
     try {
       console.log("Register payload:", {
         fullName: data.firstName + " " + data.lastName,
@@ -163,6 +196,79 @@ const LoginPage = () => {
   const handleSwitch = () => {
     setView(view === "login" ? "register" : "login");
     setError("");
+    setIsGoogleLoading(false);
+  };
+
+  const handleGoogleLogin = () => {
+    setError("");
+    setIsGoogleLoading(true);
+
+    const requiredFirebaseEnv = [
+      "VITE_FIREBASE_API_KEY",
+      "VITE_FIREBASE_AUTH_DOMAIN",
+      "VITE_FIREBASE_PROJECT_ID",
+      "VITE_FIREBASE_APP_ID",
+    ];
+
+    const missingFirebaseEnv = requiredFirebaseEnv.filter(
+      (envKey) => !import.meta.env[envKey],
+    );
+
+    if (missingFirebaseEnv.length > 0) {
+      setError(`Missing Firebase env: ${missingFirebaseEnv.join(", ")}`);
+      setIsGoogleLoading(false);
+      return;
+    }
+
+    signInWithPopup(firebaseAuth, googleProvider)
+      .then(async (result) => {
+        const firebaseIdToken = await result.user.getIdToken();
+        const firebaseRefreshToken = result.user.refreshToken;
+
+        const exchangeUrl = import.meta.env.VITE_FIREBASE_AUTH_EXCHANGE_URL;
+
+        if (exchangeUrl) {
+          const response = await fetch(exchangeUrl, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              idToken: firebaseIdToken,
+            }),
+          });
+
+          if (!response.ok) {
+            throw new Error("Failed to exchange Firebase token with backend.");
+          }
+
+          const responseData = await response.json();
+          const tokenPayload = responseData?.data || responseData;
+
+          if (!tokenPayload?.accessToken) {
+            throw new Error(
+              "Backend token exchange did not return accessToken.",
+            );
+          }
+
+          storeAccessToken(tokenPayload.accessToken);
+          storeRefreshToken(tokenPayload.refreshToken || firebaseIdToken);
+        } else {
+          storeAccessToken(firebaseIdToken);
+          storeRefreshToken(firebaseRefreshToken || firebaseIdToken);
+        }
+
+        setIsGoogleLoading(false);
+        navigate("/");
+      })
+      .catch((firebaseError) => {
+        console.error("Firebase Google login failed:", firebaseError);
+        setError(
+          firebaseError?.message ||
+            "Google login failed. Please check Firebase config and try again.",
+        );
+        setIsGoogleLoading(false);
+      });
   };
 
   const getInputClassName = (isSelect = false) => {
@@ -365,7 +471,11 @@ const LoginPage = () => {
                   )}
                 </button>
 
-                <GoogleButton text="Google" />
+                <GoogleButton
+                  text="Google"
+                  onClick={handleGoogleLogin}
+                  isLoading={isGoogleLoading}
+                />
               </form>
             )}
 
@@ -557,7 +667,11 @@ const LoginPage = () => {
                   Register
                 </button>
 
-                <GoogleButton text="Google" />
+                <GoogleButton
+                  text="Google"
+                  onClick={handleGoogleLogin}
+                  isLoading={isGoogleLoading}
+                />
               </form>
             )}
 
