@@ -75,6 +75,7 @@ export default function BlogPost() {
   const [coverPreview, setCoverPreview] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [isEditorReady, setIsEditorReady] = useState(false);
 
   const [uploadMedia, { isLoading: isUploadingImage }] =
     useUploadMediaMutation();
@@ -173,7 +174,12 @@ export default function BlogPost() {
 
   // Initialize Quill
   useEffect(() => {
-    if (!editorRootRef.current || quillInstanceRef.current) return;
+    if (
+      (uuid && isFetching) ||
+      !editorRootRef.current ||
+      quillInstanceRef.current
+    )
+      return;
 
     quillInstanceRef.current = new Quill(editorRootRef.current, {
       theme: "snow",
@@ -189,34 +195,30 @@ export default function BlogPost() {
         ],
       },
     });
+    setIsEditorReady(true);
 
     return () => {
       quillInstanceRef.current = null;
+      setIsEditorReady(false);
     };
-  }, []);
+  }, [uuid, isFetching]);
 
   // Pre-fill data when editing a draft
   useEffect(() => {
-    if (!blogResult) return;
+    if (!blogResult || !isEditorReady || !quillInstanceRef.current) return;
 
     const blog = blogResult?.data || blogResult;
     if (blog && typeof blog === "object" && !Array.isArray(blog)) {
       setTitle(blog.title || "");
       setCategory(blog.blogCategory || "");
-      setCoverPreview(blog.thumbnailUrl || "");
+      setCoverPreview(blog.thumbnailUrl || blog.thumbnail || "");
 
-      if (quillInstanceRef.current && blog.content) {
-        // Use a small timeout to ensure Quill is fully stable
-        setTimeout(() => {
-          if (quillInstanceRef.current) {
-            quillInstanceRef.current.clipboard.dangerouslyPasteHTML(
-              blog.content,
-            );
-          }
-        }, 0);
+      if (blog.content) {
+        quillInstanceRef.current.setContents([]);
+        quillInstanceRef.current.clipboard.dangerouslyPasteHTML(blog.content);
       }
     }
-  }, [blogResult]);
+  }, [blogResult, isEditorReady]);
 
   if (uuid && isFetching) {
     return (
