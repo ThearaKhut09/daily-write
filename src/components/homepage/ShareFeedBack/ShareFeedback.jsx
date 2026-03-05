@@ -34,7 +34,7 @@ export default function ShareFeedback() {
   return (
     <div ref={sectionRef} className="container mx-auto">
       <div
-        className={`bg-[#F38331] rounded-2xl lg:rounded-[2rem] p-8 lg:p-16 grid lg:grid-cols-2 gap-12 items-center shadow-2xl shadow-orange-200 transition-all duration-1000 ease-out transform ${
+        className={`bg-[#F38331] rounded-2xl lg:rounded-[2rem] p-8 lg:p-16 grid lg:grid-cols-2 gap-12 items-center transition-all duration-1000 ease-out transform ${
           isVisible
             ? "opacity-100 scale-100 rotate-0"
             : "opacity-0 scale-95 rotate-1"
@@ -105,7 +105,7 @@ export default function ShareFeedback() {
             >
               <button
                 type="submit"
-                className="w-full bg-[#24292E] text-white font-bold py-4 rounded-xl hover:bg-slate-800 active:scale-[0.98] transition-all text-lg shadow-lg hover:shadow-xl hover:shadow-gray-900/30"
+                className="w-full bg-[#24292E] text-white font-bold py-4 rounded-xl hover:bg-slate-800 active:scale-[0.98] transition-all text-lg"
               >
                 {t("feedback.submit")}
               </button>
