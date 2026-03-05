@@ -85,7 +85,7 @@ export default function BlogList() {
           className="absolute right-[14%] top-8 hidden w-24 opacity-80 md:block"
         />
         <img
-          src="https://www.figma.com/api/mcp/asset/e57b8f23-51fd-4fe9-9a66-cad6b3a43d44"
+          src="../src/assets/blogpage/Planet.png"
           alt="Planet"
           className="absolute bottom-8 left-1/2 hidden w-20 -translate-x-1/2 opacity-80 md:block"
         />
