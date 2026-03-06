@@ -48,24 +48,17 @@ export default function Information() {
         }`}
       >
         <span
-          className={`inline-block transition-all duration-700 ease-out transform ${
+          className={`inline-flex items-baseline gap-2 whitespace-nowrap transition-all duration-700 ease-out transform ${
             isVisible
-              ? "opacity-100 translate-y-0 rotate-0"
-              : "opacity-0 -translate-y-10 -rotate-12"
-          }`}
-          style={{ transitionDelay: "100ms" }}
+              ? "opacity-100 translate-y-0 animate-fade-in-up"
+              : "opacity-0 translate-y-10"
+          } ${isKhmer ? "tracking-[0.01em]" : ""}`}
+          style={{ transitionDelay: "150ms" }}
         >
-          <span className="text-primary-orange inline-block animate-wave">
+          <span className="text-primary-orange animate-wave">
             {t("hero.leadLetter")}
           </span>
-        </span>{" "}
-        <span
-          className={`inline-block transition-all duration-700 ease-out transform ${
-            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-          } ${isKhmer ? "tracking-[0.01em]" : ""}`}
-          style={{ transitionDelay: "200ms" }}
-        >
-          {t("hero.titleLine1")}
+          <span>{t("hero.titleLine1")}</span>
         </span>
         <span
           className={`text-primary-orange block text-2xl sm:text-3xl lg:text-4xl xl:text-5xl transition-all duration-700 ease-out transform ${
