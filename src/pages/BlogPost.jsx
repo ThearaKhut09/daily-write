@@ -11,47 +11,7 @@ import {
 } from "../app/features/services/productApi";
 import { buildCreateBlogPayload } from "../app/features/services/blogPayload";
 import { useI18n } from "../i18n/useI18n";
-
-const FILE_PREVIEW_BASE_URL = import.meta.env.VITE_BASE_URL;
-
-const getFileExtension = (fileName) => {
-  const extension = fileName?.split(".")?.pop()?.toLowerCase();
-  return extension || "jpg";
-};
-
-const resolveMediaPreviewUrl = (response, originalFileName) => {
-  const payload = response?.data ?? response;
-  const media = Array.isArray(payload) ? payload[0] : payload;
-
-  if (typeof media === "string" && media.startsWith("http")) {
-    return media;
-  }
-
-  const directUrl =
-    media?.previewLink ||
-    media?.previewUrl ||
-    media?.url ||
-    media?.fileUrl ||
-    media?.downloadUrl;
-
-  if (directUrl) {
-    return directUrl.startsWith("http")
-      ? directUrl
-      : `${FILE_PREVIEW_BASE_URL}/${directUrl.replace(/^\//, "")}`;
-  }
-
-  const fileName = media?.fileName || media?.name;
-  if (fileName) {
-    return `${FILE_PREVIEW_BASE_URL}/${fileName}`;
-  }
-
-  const uuid = media?.uuid || media?.id || media?.fileUuid || media?.mediaUuid;
-  if (uuid) {
-    return `${FILE_PREVIEW_BASE_URL}/${uuid}.${getFileExtension(originalFileName)}`;
-  }
-
-  return "";
-};
+import { resolveMediaPreviewUrl } from "../util/mediaUrl";
 
 export default function BlogPost() {
   const { t } = useI18n();
