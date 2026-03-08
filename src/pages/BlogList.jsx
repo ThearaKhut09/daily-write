@@ -3,29 +3,75 @@ import { Search, ChevronLeft, ChevronRight } from "lucide-react";
 import ListBlog from "../components/BlogPage/ListBlog";
 import { useGetAllProductQuery } from "../app/features/services/productApi";
 import { useI18n } from "../i18n/useI18n";
+import Idealamp from "../assets/blogpage/Idea lamp.png"
+import planet from "../assets/blogpage/Planet.png"
+
 
 export default function BlogList() {
   const [page, setPage] = useState(0);
   const [sortBy, setSortBy] = useState("createdAt,desc");
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("all");
   const { t } = useI18n();
   const pageSize = 12;
 
   const mainCategories = [
-    { label: "Front-End", value: "front-end" },
-    { label: "Back-End", value: "back-end" },
-    { label: "Cyber Security", value: "cyber-security" },
-    { label: "UXUI Design", value: "ux-ui-design" },
-    { label: "Mobile App", value: "mobile-app" },
-    { label: "Art History", value: "art-history" },
+    { label: "Lifestyle", value: "Lifestyle" },
+    { label: "Health & Wellness", value: "Health & Wellness" },
+    { label: "Travel", value: "Travel" },
+    { label: "Food & Recipes", value: "Food & Recipes" },
+    { label: "Personal Growth", value: "Personal Growth" },
+    { label: "Technology", value: "Technology" },
   ];
 
-  const { data } = useGetAllProductQuery({
-    pageNumber: page,
-    pageSize,
-    sortBy,
+  const { data, isLoading } = useGetAllProductQuery({
+    pageNumber: 0,
+    pageSize: 200, // Fetch a large amount to handle frontend sorting/filtering
   });
-  const totalPages = data?.data?.totalPages || 0;
+
+  const allBlogs = data?.data?.content || [];
+
+  // Filter and Sort logic
+  const filteredAndSortedBlogs = (() => {
+    let result = [...allBlogs];
+
+    // Filter by category
+    if (selectedCategory !== "all") {
+      result = result.filter(
+        (blog) => blog.blogCategory?.toLowerCase() === selectedCategory.toLowerCase()
+      );
+    }
+
+    // Filter by search
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      result = result.filter(
+        (blog) =>
+          blog.title?.toLowerCase().includes(query) ||
+          blog.content?.toLowerCase().includes(query)
+      );
+    }
+
+    // Sort
+    result.sort((a, b) => {
+      if (sortBy === "view,desc") {
+        return (b.view || 0) - (a.view || 0);
+      } else if (sortBy === "createdAt,desc") {
+        return new Date(b.createdAt) - new Date(a.createdAt);
+      } else if (sortBy === "createdAt,asc") {
+        return new Date(a.createdAt) - new Date(b.createdAt);
+      }
+      return 0;
+    });
+
+    return result;
+  })();
+
+  const totalPages = Math.ceil(filteredAndSortedBlogs.length / pageSize);
+  const paginatedBlogs = filteredAndSortedBlogs.slice(
+    page * pageSize,
+    (page + 1) * pageSize
+  );
 
   const handleSortChange = (e) => {
     setSortBy(e.target.value);
@@ -80,12 +126,12 @@ export default function BlogList() {
         <span className="absolute right-[16%] top-[70%] h-3 w-3 rounded-full bg-[#a5aaae]" />
 
         <img
-          src="../src/assets/blogpage/Idea lamp.png"
+          src={Idealamp}
           alt="Idea lamp"
           className="absolute right-[14%] top-8 hidden w-24 opacity-80 md:block"
         />
         <img
-          src="../src/assets/blogpage/Planet.png"
+          src={planet}
           alt="Planet"
           className="absolute bottom-8 left-1/2 hidden w-20 -translate-x-1/2 opacity-80 md:block"
         />
@@ -119,11 +165,11 @@ export default function BlogList() {
           <button
             key="all"
             onClick={() => {
-              setSearchQuery("");
+              setSelectedCategory("all");
               setPage(0);
             }}
             className={`shrink-0 rounded-md border border-border-main px-5 py-2 text-xs transition-colors hover:bg-orange-50 ${
-              !searchQuery
+              selectedCategory === "all"
                 ? "bg-primary-orange text-white"
                 : "bg-bg-main text-primary-orange"
             }`}
@@ -135,13 +181,13 @@ export default function BlogList() {
             <button
               key={category.value}
               onClick={() => {
-                setSearchQuery(
-                  category.value === searchQuery ? "" : category.value,
+                setSelectedCategory(
+                  category.value === selectedCategory ? "all" : category.value,
                 );
                 setPage(0);
               }}
               className={`shrink-0 rounded-md border border-border-main px-5 py-2 text-xs transition-colors hover:bg-orange-50 ${
-                searchQuery.toLowerCase() === category.value.toLowerCase()
+                selectedCategory.toLowerCase() === category.value.toLowerCase()
                   ? "bg-primary-orange text-white"
                   : "bg-bg-main text-primary-orange"
               }`}
@@ -174,10 +220,14 @@ export default function BlogList() {
         <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {/* Card blog */}
           <ListBlog
-            page={page}
+            blogs={paginatedBlogs}
+            isLoading={isLoading}
             pageSize={pageSize}
-            sortBy={sortBy}
-            searchQuery={searchQuery}
+            onTagClick={(tag) => {
+              setSelectedCategory(tag);
+              setPage(0);
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
           />
         </div>
 
