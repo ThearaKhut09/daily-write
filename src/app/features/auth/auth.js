@@ -1,4 +1,3 @@
-import { getDecryptedAccessToken } from "../../../util/tokenUtil";
 import { baseApi } from "../../baseApi";
 
 export const auth = baseApi.injectEndpoints({
@@ -31,4 +30,8 @@ export const auth = baseApi.injectEndpoints({
   }),
 });
 
-export const { useUserLoginMutation, useUserRegisterMutation, useGetCurrentUserQuery } = auth;
+export const {
+  useUserLoginMutation,
+  useUserRegisterMutation,
+  useGetCurrentUserQuery,
+} = auth;
