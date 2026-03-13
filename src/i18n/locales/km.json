@@ -6,6 +6,9 @@
         "write": "សរសេរ",
         "login": "ចូលគណនី",
         "logout": "ចាកចេញ",
+        "cancel": "បោះបង់",
+        "confirmLogoutTitle": "បញ្ជាក់ការចាកចេញ",
+        "logoutConfirm": "តើអ្នកប្រាកដថាចង់ចាកចេញមែនទេ?",
         "profile": "ប្រវត្តិរូប",
         "language": "English"
     },
@@ -217,6 +220,8 @@
         "light": "ភ្លឺ",
         "dark": "ងងឹត",
         "logOut": "ចាកចេញ",
+        "confirmLogoutTitle": "បញ្ជាក់ការចាកចេញ",
+        "logoutConfirm": "តើអ្នកប្រាកដថាចង់ចាកចេញមែនទេ?",
         "blogs": "អត្ថបទ",
         "update": "កែប្រែ",
         "delete": "លុប",

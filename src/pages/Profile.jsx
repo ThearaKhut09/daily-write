@@ -9,7 +9,6 @@ import {
   Pencil,
   Trash2,
   X,
-  LogOut,
   Menu,
 } from "lucide-react";
 import { useGetCurrentUserQuery } from "../app/features/auth/auth";
@@ -58,12 +57,6 @@ const Profile = () => {
       setPage(lastValidPage);
     }
   }, [page, totalPages]);
-
-  const handleLogout = () => {
-    clearTokens();
-    navigate("/");
-    window.location.reload();
-  };
 
   const handleSwitchTab = (tab) => {
     setActiveTab(tab);
@@ -197,15 +190,6 @@ const Profile = () => {
           >
             <Bookmark size={18} /> {t("profile.draft")}
           </button>
-
-          <div className="mt-auto pt-6 border-t border-(--border-color)">
-            <button
-              onClick={handleLogout}
-              className="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all text-red-600 hover:bg-red-50"
-            >
-              <LogOut size={18} /> {t("profile.logOut")}
-            </button>
-          </div>
         </nav>
       </aside>
 
@@ -433,7 +417,7 @@ const Profile = () => {
       </main>
 
       {blogToDelete && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 px-4">
+        <div className="fixed inset-0 z-60 flex items-center justify-center bg-black/40 px-4">
           <div className="w-full max-w-md rounded-xl bg-(--bg-primary) p-6 shadow-xl border border-(--border-color)">
             <div className="flex items-start justify-between">
               <h3 className="text-lg font-bold text-(--text-primary)">

@@ -6,6 +6,9 @@
         "write": "Write",
         "login": "Login",
         "logout": "Logout",
+        "cancel": "Cancel",
+        "confirmLogoutTitle": "Confirm Logout",
+        "logoutConfirm": "Are you sure you want to log out?",
         "profile": "Profile",
         "language": "ភាសាខ្មែរ"
     },
@@ -217,6 +220,8 @@
         "light": "Light",
         "dark": "Dark",
         "logOut": "Log Out",
+        "confirmLogoutTitle": "Confirm Logout",
+        "logoutConfirm": "Are you sure you want to log out?",
         "blogs": "Blogs",
         "update": "Update",
         "delete": "Delete",
