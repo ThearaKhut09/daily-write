@@ -3,11 +3,30 @@ const getFileExtension = (fileName) => {
   return extension || "jpg";
 };
 
+const DEFAULT_API_BASE_URL = "https://blog-api.bykh.org/api/v100";
+
+const resolveMediaBaseUrl = () => {
+  const configuredBaseUrl = import.meta.env.VITE_BASE_URL || DEFAULT_API_BASE_URL;
+  const isVercelDeployment =
+    typeof window !== "undefined" && window.location.hostname.endsWith("vercel.app");
+
+  if (!isVercelDeployment || !/^https?:\/\//i.test(configuredBaseUrl)) {
+    return configuredBaseUrl;
+  }
+
+  try {
+    const { pathname } = new URL(configuredBaseUrl);
+    const normalizedPath = pathname.replace(/\/$/, "");
+    return `/proxy${normalizedPath}`;
+  } catch {
+    return configuredBaseUrl;
+  }
+};
+
 export const resolveMediaPreviewUrl = (
   response,
   originalFileName,
-  baseUrl = import.meta.env.VITE_BASE_URL ||
-    "https://blog-api.bykh.org/api/v100",
+  baseUrl = resolveMediaBaseUrl(),
 ) => {
   const payload = response?.data ?? response;
   const media = Array.isArray(payload) ? payload[0] : payload;

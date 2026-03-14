@@ -7,10 +7,29 @@ import {
   clearTokens,
 } from "../util/tokenUtil";
 
+const DEFAULT_API_BASE_URL = "https://blog-api.bykh.org/api/v100";
+
+const resolveApiBaseUrl = () => {
+  const configuredBaseUrl = import.meta.env.VITE_BASE_URL || DEFAULT_API_BASE_URL;
+  const isVercelDeployment =
+    typeof window !== "undefined" && window.location.hostname.endsWith("vercel.app");
+
+  if (!isVercelDeployment || !/^https?:\/\//i.test(configuredBaseUrl)) {
+    return configuredBaseUrl;
+  }
+
+  try {
+    const { pathname } = new URL(configuredBaseUrl);
+    const normalizedPath = pathname.replace(/\/$/, "");
+    return `/proxy${normalizedPath}`;
+  } catch {
+    return configuredBaseUrl;
+  }
+};
+
 // create customBaseQuery
 const customBaseQuery = fetchBaseQuery({
-  baseUrl:
-    import.meta.env.VITE_BASE_URL || "https://blog-api.bykh.org/api/v100",
+  baseUrl: resolveApiBaseUrl(),
   prepareHeaders: (header) => {
     const accessToken = getDecryptedAccessToken();
     if (accessToken && !header.has("Authorization")) {
