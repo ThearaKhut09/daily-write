@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import { MessageCircle, X, Send, Loader2, Bot, User } from "lucide-react";
 
-const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 const GROQ_MODEL = "llama-3.3-70b-versatile";
+const CHAT_PROXY_URL = "/api/groq-chat";
 
 const SYSTEM_PROMPT = `You are DailyWrite AI, a friendly writing assistant on the DailyWrite blog platform.
 Help users with:
@@ -46,23 +46,15 @@ export default function ChatBot() {
     setIsLoading(true);
 
     try {
-      const apiKey = import.meta.env.VITE_GROQ_API_KEY;
-      if (!apiKey) {
-        throw new Error(
-          "Missing API key. Add `VITE_GROQ_API_KEY` to your `.env` file.",
-        );
-      }
-
       const history = messages.map((m) => ({
         role: m.role === "model" ? "assistant" : "user",
         content: m.text,
       }));
 
-      const response = await fetch(GROQ_API_URL, {
+      const response = await fetch(CHAT_PROXY_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${apiKey}`,
         },
         body: JSON.stringify({
           model: GROQ_MODEL,
@@ -79,7 +71,7 @@ export default function ChatBot() {
       if (!response.ok) {
         throw {
           status: response.status,
-          message: data?.error?.message || "Request failed",
+          message: data?.error || data?.message || "Request failed",
         };
       }
 
@@ -94,7 +86,7 @@ export default function ChatBot() {
         status === 429
           ? " **Rate limit reached.** The free tier quota is exhausted. Please wait and try again."
           : status === 401
-            ? " **Invalid API key.** Check your `VITE_GROQ_API_KEY` in `.env`."
+            ? " **Invalid API key.** Check your `GROQ_API_KEY` in Vercel environment variables."
             : " **Something went wrong.** " +
               (err?.message ?? "Please try again.");
       setMessages((prev) => [...prev, { role: "model", text: errorText }]);
