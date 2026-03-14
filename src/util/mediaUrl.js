@@ -6,9 +6,11 @@ const getFileExtension = (fileName) => {
 const DEFAULT_API_BASE_URL = "https://blog-api.bykh.org/api/v100";
 
 const resolveMediaBaseUrl = () => {
-  const configuredBaseUrl = import.meta.env.VITE_BASE_URL || DEFAULT_API_BASE_URL;
+  const configuredBaseUrl =
+    import.meta.env.VITE_BASE_URL || DEFAULT_API_BASE_URL;
   const isVercelDeployment =
-    typeof window !== "undefined" && window.location.hostname.endsWith("vercel.app");
+    typeof window !== "undefined" &&
+    window.location.hostname.endsWith("vercel.app");
 
   if (!isVercelDeployment || !/^https?:\/\//i.test(configuredBaseUrl)) {
     return configuredBaseUrl;
