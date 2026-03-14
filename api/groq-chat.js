@@ -7,10 +7,10 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method Not Allowed" });
   }
 
-  const apiKey = process.env.GROQ_API_KEY;
+  const apiKey = process.env.GROQ_API_KEY || process.env.VITE_GROQ_API_KEY;
   if (!apiKey) {
     return res.status(500).json({
-      error: "Server is not configured. Missing GROQ_API_KEY.",
+      error: "Server is not configured. Missing GROQ_API_KEY (or VITE_GROQ_API_KEY).",
     });
   }
 
