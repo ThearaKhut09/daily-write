@@ -19,7 +19,7 @@ const resolveMediaBaseUrl = () => {
   try {
     const { pathname } = new URL(configuredBaseUrl);
     const normalizedPath = pathname.replace(/\/$/, "");
-    return `/proxy${normalizedPath}`;
+    return `/api/backend${normalizedPath}`;
   } catch {
     return configuredBaseUrl;
   }

@@ -1,10 +1,6 @@
 {
   "rewrites": [
     {
-      "source": "/proxy/(.*)",
-      "destination": "https://blog-api.bykh.org/$1"
-    },
-    {
       "source": "/api/(.*)",
       "destination": "/api/$1"
     },
