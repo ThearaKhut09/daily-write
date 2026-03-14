@@ -6,7 +6,8 @@ const getFileExtension = (fileName) => {
 export const resolveMediaPreviewUrl = (
   response,
   originalFileName,
-  baseUrl = import.meta.env.VITE_BASE_URL || "https://blog-api.bykh.org/api/v100",
+  baseUrl = import.meta.env.VITE_BASE_URL ||
+    "https://blog-api.bykh.org/api/v100",
 ) => {
   const payload = response?.data ?? response;
   const media = Array.isArray(payload) ? payload[0] : payload;

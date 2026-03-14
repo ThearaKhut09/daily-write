@@ -9,7 +9,8 @@ import {
 
 // create customBaseQuery
 const customBaseQuery = fetchBaseQuery({
-  baseUrl: import.meta.env.VITE_BASE_URL || "https://blog-api.bykh.org/api/v100",
+  baseUrl:
+    import.meta.env.VITE_BASE_URL || "https://blog-api.bykh.org/api/v100",
   prepareHeaders: (header) => {
     const accessToken = getDecryptedAccessToken();
     if (accessToken && !header.has("Authorization")) {

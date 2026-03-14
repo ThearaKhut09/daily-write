@@ -10,15 +10,22 @@ export default async function handler(req, res) {
   const apiKey = process.env.GROQ_API_KEY || process.env.VITE_GROQ_API_KEY;
   if (!apiKey) {
     return res.status(500).json({
-      error: "Server is not configured. Missing GROQ_API_KEY (or VITE_GROQ_API_KEY).",
+      error:
+        "Server is not configured. Missing GROQ_API_KEY (or VITE_GROQ_API_KEY).",
     });
   }
 
   try {
-    const { messages, temperature = 0.7, model = DEFAULT_MODEL } = req.body || {};
+    const {
+      messages,
+      temperature = 0.7,
+      model = DEFAULT_MODEL,
+    } = req.body || {};
 
     if (!Array.isArray(messages) || messages.length === 0) {
-      return res.status(400).json({ error: "messages must be a non-empty array" });
+      return res
+        .status(400)
+        .json({ error: "messages must be a non-empty array" });
     }
 
     const response = await fetch(GROQ_API_URL, {
